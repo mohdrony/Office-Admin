@@ -1,4 +1,5 @@
 from django.db import models
+from people.models import Person
 
 
 class Project(models.Model):
@@ -7,6 +8,8 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    members = models.ManyToManyField(Person, blank=True, related_name="projects")
 
     def __str__(self):
         return self.name
