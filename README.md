@@ -1,12 +1,26 @@
 # Office Admin
 
-Internal office administration system (Django backend, React frontend later).
+Internal office administration system built with Django and PostgreSQL.
 
-## Structure
-- backend/ - Django project
-- frontend/ - (planned)
+This project is designed as a backend-first system for managing:
+- Projects
+- People (employees / collaborators)
+- Events (meetings, deadlines, site visits)
+- Time entries (Zeiterfassung)
 
-## Setup
-1) source .venv/bin/activate
-2) cd backend
-3) python manage.py runserver
+A React frontend is planned to consume the API.
+
+---
+
+## Tech Stack
+
+- Backend: Django
+- Database: PostgreSQL
+- API: Django REST Framework (REST API)
+- Auth (admin): Django Admin
+- Frontend (planned): React + Tailwind
+
+---
+
+## Project Structure
+
