@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'projects',
     'people',
     'events',
-    'time_entries'
+    'time_entries',
+
+    'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
