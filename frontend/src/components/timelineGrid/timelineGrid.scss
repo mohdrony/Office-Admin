@@ -1,0 +1,150 @@
+.timelineGrid {
+  // constants (keep here so it’s easy to change later)
+  $leftCol: 260px;
+  $headerTopH: 34px;
+  $headerBottomH: 30px;
+  $colW: 28px;
+  $cols: 52;
+  $viewPadRight: 140px;
+
+  position: absolute; // background layer
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background-color: #bbb; //testing
+
+  .weeks,
+  .weekLines {
+    grid-template-columns: repeat(var(--cols), var(--col-width));
+  }
+
+  .timelineHeader {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    pointer-events: auto;
+    background: white;
+    border-bottom: 1px solid #eee;
+
+    .leftSpacer {
+      width: $leftCol;
+      flex-shrink: 0;
+    }
+
+    .headerTop {
+      height: $headerTopH;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+
+      .titleArea {
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        .rangeTitle {
+          font-size: 12px;
+          font-weight: 700;
+          color: #333;
+        }
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        button {
+          pointer-events: auto;
+          height: 22px;
+          padding: 0 8px;
+          border-radius: 6px;
+          border: 1px solid #ddd;
+          background: white;
+          font-size: 12px;
+          cursor: pointer;
+        }
+
+        .viewSwitch {
+          display: flex;
+          gap: 6px;
+
+          button.isActive {
+            border-color: #bbb;
+            font-weight: 700;
+            ;
+          }
+        }
+      }
+    }
+
+    .headerBottom {
+      height: $headerBottomH;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 12px;
+
+
+      .weeksWrap {
+        position: relative;
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-right: $viewPadRight;
+        pointer-events: auto;
+      }
+
+      .weeks {
+        display: grid;
+        align-items: end;
+        grid-auto-flow: column;
+
+        .weekLabel {
+          font-size: 10px;
+          text-align: center;
+          color: #777;
+          padding-bottom: 6px;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  .timelineBody {
+    position: absolute;
+    top: calc($headerTopH + $headerBottomH);
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+
+    .leftSpacer {
+      width: $leftCol;
+      flex-shrink: 0;
+    }
+
+    .weekLinesWrap {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      pointer-events: auto;
+    }
+
+    .weekLines {
+      display: grid;
+      height: 100%;
+      grid-auto-flow: column;
+
+      .weekLine {
+        height: 100%;
+        border-left: 1px dashed #e7e7e7;
+
+        &:nth-child(5n + 1) {
+          border-left: 1px solid #cfcfcf;
+        }
+      }
+    }
+  }
+}

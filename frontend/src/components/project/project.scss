@@ -1,12 +1,107 @@
-.project{
+.project {
     display: flex;
-    justify-content: space-between;
-    flex: 1;
-    padding: 10px;
+    align-items: stretch;
+    border-radius: 25px;
+    min-height: 200px;
+    height: auto;
+    outline: 2px solid red;
 
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+
     box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    border-radius: 10px;
-    height: 100px;
 
+    &:hover {
+        outline: 1px solid gold;
+    }
+
+    .projectDetailArea {
+        width: 260px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: aquamarine;
+
+        h2,
+        h3,
+        h4 {
+            padding: 0px 10px;
+        }
+
+        h3,
+        h4 {
+            color: #555;
+        }
+
+        .persons {
+            display: flex;
+            align-items: center;
+
+            .avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                padding: 5px;
+            }
+        }
+
+    }
+
+    .timelineArea {
+        flex: 1;
+        position: relative;
+        padding: 0 12px;
+
+        .phaseCanvas {
+            position: relative;
+            height: 100%;
+            padding: 12px 0;
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .phaseBar {
+            position: absolute;
+            height: 18px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .phaseLabel {
+            font-size: 11px;
+            color: #444;
+            font-weight: 600;
+        }
+
+        .milestoneDot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #222;
+            transform: translateX(-50%);
+            opacity: 0.85;
+
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .milestoneIcon {
+            position: absolute;
+            transform: translateX(-50%);
+            font-size: 16px; // controls MUI icon size (inherit)
+            color: #222;
+            opacity: 0.9;
+
+            width: 18px;
+            height: 18px;
+            display: grid;
+            place-items: center;
+
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85); // helps readability on colored bars
+        }
+    }
 }
