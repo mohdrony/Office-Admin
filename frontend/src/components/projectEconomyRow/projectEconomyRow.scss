@@ -1,0 +1,138 @@
+/* projectEconomyRow.scss */
+
+.projectEconomyRow {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 25px;
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+
+  &:hover {
+    outline: 1px solid gold;
+  }
+
+  .projectHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    padding-bottom: 8px;
+
+    .projectDescription,
+    .projectDetails {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      h2 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .serviceList {
+    padding: 12px;
+  }
+
+  ul.phase {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+    border-radius: 12px;
+    overflow: hidden; // keeps phase header background rounded nicely
+  }
+
+  .timeBudgetHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    font-weight: 700;
+    border-bottom: 1px solid #bbb;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(0.98);
+    }
+
+    &::after {
+      content: "▸";
+      margin-left: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    &.open::after {
+      transform: rotate(90deg);
+    }
+  }
+
+  .timeEntryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 8px 16px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .entryLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0; // allows text truncation if needed
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    overflow: hidden;
+    flex: 0 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.08);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .initials {
+      font-size: 0.75rem;
+      font-weight: 700;
+      user-select: none;
+    }
+  }
+
+  .description {
+    flex: 1;
+    text-align: left;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .right {
+    min-width: 80px;
+    text-align: right;
+    font-family: monospace;
+    white-space: nowrap;
+  }
+}

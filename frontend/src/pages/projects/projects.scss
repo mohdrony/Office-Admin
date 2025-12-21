@@ -1,28 +1,9 @@
-.projectsMain {
-  display: flex;
+.projects{
+    display: flex;
 
-  .projectsContainer {
-    flex: 6;
-
-    .content {
-      .projects {
-        position: relative;
-        padding: 20px 0px;
-
-        // makes TimelineGrid (absolute) stretch full visible page height
-        min-height: calc(100vh - 64px); // change 64px if your navbar is different
-      }
-
-      .projectsRows {
-        position: relative;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        // keep rows below the KW header
-        padding-top: 48px; // match timelineHeader height
-      }
+    .projectsContainer{
+        flex: 6;
+        height: 200px;
+        
     }
-  }
 }

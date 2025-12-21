@@ -1,4 +1,4 @@
-import "./project.scss";
+import "./timelineRow.scss";
 
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
@@ -14,7 +14,7 @@ const BOT_PAD = 12;
 const toUTCDate = (s) => new Date(`${s}T00:00:00Z`);
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-const Project = ({ project, visibleStart, visibleEnd, colWidth, colCount }) => {
+const TimelineRow = ({ project, visibleStart, visibleEnd, colWidth, colCount }) => {
   const maxPhaseLane = project.phases?.length ? project.phases.length - 1 : 0;
   const maxMilestoneLane = project.milestones?.reduce((m, x) => Math.max(m, x.lane ?? 0), 0) ?? 0;
   const maxLane = Math.max(maxPhaseLane, maxMilestoneLane);
@@ -52,11 +52,11 @@ const Project = ({ project, visibleStart, visibleEnd, colWidth, colCount }) => {
 
 
   return (
-    <div className="project" style={{ minHeight: `${rowHeight}px` }}>
+    <div className="timelineRow" style={{ minHeight: `${rowHeight}px` }}>
       <div className="projectDetailArea">
-        <h2>{project.projectNumber}</h2>
-        <h3>{project.shortName}</h3>
-        <h4>{project.name}</h4>
+        <h4>{project.projectNumber}</h4>
+        <h5>{project.shortName}</h5>
+        <p>{project.name}</p>
 
         <div className="persons">
           {project.persons.map((person) => (
@@ -120,4 +120,4 @@ const Project = ({ project, visibleStart, visibleEnd, colWidth, colCount }) => {
   );
 };
 
-export default Project;
+export default TimelineRow;

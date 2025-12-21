@@ -15,18 +15,18 @@ export const projectsDummy = [
     endDate: "2025-10-31",
 
     phases: [
-      { id: "ph1", name: "Concept", start: "2025-01-06", end: "2025-02-28", color: "#D9E8FF" },
-      { id: "ph2", name: "Design", start: "2025-03-01", end: "2025-05-31", color: "#DFF7E3" },
-      { id: "ph3", name: "Approval", start: "2025-06-01", end: "2025-07-15", color: "#FFF1D6" },
-      { id: "ph4", name: "Execution", start: "2025-07-16", end: "2025-10-31", color: "#F2D9FF" },
-      { id: "ph5", name: "Concept", start: "2025-01-06", end: "2025-02-28", color: "#D9E8FF" },
-      { id: "ph6", name: "Design", start: "2025-03-01", end: "2025-05-31", color: "#DFF7E3" },
-      { id: "ph7", name: "Approval", start: "2025-06-01", end: "2025-07-15", color: "#FFF1D6" },
-      { id: "ph8", name: "Execution", start: "2025-07-16", end: "2025-10-31", color: "#F2D9FF" },
-      { id: "ph9", name: "Concept", start: "2025-01-06", end: "2025-02-28", color: "#D9E8FF" },
-      { id: "ph10", name: "Design", start: "2025-03-01", end: "2025-05-31", color: "#DFF7E3" },
-      { id: "ph11", name: "Approval", start: "2025-06-01", end: "2025-07-15", color: "#FFF1D6" },
-      { id: "ph12", name: "Execution", start: "2025-07-16", end: "2025-10-31", color: "#F2D9FF" }, ,
+      { id: "ph1", name: "Concept", start: "2025-01-06", end: "2025-02-28", timeBudget: 100, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#D9E8FF" },
+      { id: "ph2", name: "Vorentwurf", start: "2025-03-01", end: "2025-05-31", timeBudget: 200, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#DFF7E3" },
+      { id: "ph3", name: "Entwurf", start: "2025-06-01", end: "2025-07-15", timeBudget: 300, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#FFF1D6" },
+      { id: "ph4", name: "Genehmigung", start: "2025-07-16", end: "2025-10-31", timeBudget: 50, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#F2D9FF" },
+      { id: "ph5", name: "Ausführung", start: "2025-01-06", end: "2025-02-28", timeBudget: 300, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#D9E8FF" },
+      { id: "ph6", name: "LV", start: "2025-03-01", end: "2025-05-31", timeBudget: 100, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#DFF7E3" },
+      { id: "ph7", name: "LVBeauftragung", start: "2025-06-01", end: "2025-07-15", timeBudget: 50, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#FFF1D6" },
+      { id: "ph8", name: "Bauphase", start: "2025-07-16", end: "2025-10-31", timeBudget: 100, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#F2D9FF" },
+      { id: "ph9", name: "Pflege", start: "2025-01-06", end: "2025-02-28", timeBudget: 10, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#D9E8FF" },
+      { id: "ph10", name: "Infografik", start: "2025-03-01", end: "2025-05-31", timeBudget: 20, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#DFF7E3" },
+      { id: "ph11", name: "Überflutungsnachweis", start: "2025-06-01", end: "2025-07-15", timeBudget: 40, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#FFF1D6" },
+      { id: "ph12", name: "Sonderleistung", start: "2025-07-16", end: "2025-10-31", timeBudget: 70, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#F2D9FF" }, ,
     ],
 
     milestones: [
@@ -49,9 +49,9 @@ export const projectsDummy = [
     endDate: "2025-04-30",
 
     phases: [
-      { id: "ph1", name: "Study", start: "2025-01-02", end: "2025-02-28", color: "#D9E8FF" },
-      { id: "ph2", name: "Draft", start: "2025-02-05", end: "2025-03-13", color: "#FFF1D6" },
-      { id: "ph3", name: "Final", start: "2025-03-05", end: "2025-04-30", color: "#F2D9FF" },
+      { id: "ph1", name: "Study", start: "2025-01-02", end: "2025-02-28", timeBudget: 50, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#D9E8FF" },
+      { id: "ph2", name: "Draft", start: "2025-02-05", end: "2025-03-13", timeBudget: 100, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#FFF1D6" },
+      { id: "ph3", name: "Final", start: "2025-03-05", end: "2025-04-30", timeBudget: 50, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#F2D9FF" },
     ],
     milestones: [
       { id: "m1", date: "2025-01-05", label: "Kickoff", lane: 0, type: "meeting" },
@@ -75,9 +75,9 @@ export const projectsDummy = [
     endDate: "2026-03-31",
 
     phases: [
-      { id: "ph1", name: "Kickoff", start: "2025-06-01", end: "2025-06-30", color: "#FFF1D6" },
-      { id: "ph2", name: "Planning", start: "2025-07-01", end: "2025-12-09", color: "#DFF7E3" },
-      { id: "ph3", name: "Build", start: "2026-03-30", end: "2026-11-31", color: "#F2D9FF" },
+      { id: "ph1", name: "Kickoff", start: "2025-06-01", end: "2025-06-30", timeBudget: 50, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#FFF1D6" },
+      { id: "ph2", name: "Planning", start: "2025-07-01", end: "2025-12-09", timeBudget: 100, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#DFF7E3" },
+      { id: "ph3", name: "Build", start: "2026-03-30", end: "2026-11-31", timeBudget: 300, hourEntries: [{person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Entwerfen", hour: 5}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Teams-Meeting", hour: 2}, {person: {id: "u2", name: "person 2", avatar: avatarImage}, description: "Skizzen", hour: 3}], color: "#F2D9FF" },
     ],
 
     milestones: [

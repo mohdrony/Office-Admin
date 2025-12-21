@@ -1,6 +1,6 @@
 .timelineGrid {
   // constants (keep here so it’s easy to change later)
-  $leftCol: 260px;
+  $leftCol: 150px;
   $headerTopH: 34px;
   $headerBottomH: 30px;
   $colW: 28px;
@@ -11,8 +11,6 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-
-  background-color: #bbb; //testing
 
   .weeks,
   .weekLines {

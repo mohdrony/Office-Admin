@@ -1,11 +1,9 @@
-.project {
+.timelineRow {
     display: flex;
     align-items: stretch;
     border-radius: 25px;
     min-height: 200px;
     height: auto;
-    outline: 2px solid red;
-
 
     box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
 
@@ -14,33 +12,27 @@
     }
 
     .projectDetailArea {
-        width: 260px;
+        width: 150px;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        background-color: aquamarine;
+        padding: 12px;
 
-        h2,
-        h3,
-        h4 {
-            padding: 0px 10px;
-        }
-
-        h3,
-        h4 {
-            color: #555;
+        h5, p {
+            color: #666;
         }
 
         .persons {
             display: flex;
             align-items: center;
+            padding-top: 12px;
+            gap: 6px;
 
             .avatar {
                 width: 30px;
                 height: 30px;
                 border-radius: 50%;
-                padding: 5px;
             }
         }
 
@@ -72,7 +64,6 @@
 
         .phaseLabel {
             font-size: 11px;
-            color: #444;
             font-weight: 600;
         }
 
