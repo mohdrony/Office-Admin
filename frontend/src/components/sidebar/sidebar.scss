@@ -1,130 +1,291 @@
 .sidebar {
-    flex: 1;
-    min-height: 100vh;
-    background-color: rgb(17, 17, 17);
-    border-right: 0.5px solid rgb(230, 230, 230);
-  
-    hr {
-      height: 0;
-      border: 0.1px solid #333;
-    }
-  
-    /* ===== TOP ===== */
-    .top {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  
-      .logoLink {
-        text-decoration: none;
-        color: inherit;
-      }
-  
-      .logo {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 20px;
-        font-weight: bold;
-        color: rgb(230, 230, 230);
-      }
-    }
-  
-    /* ===== CENTER ===== */
-    .center {
-      padding-left: 10px;
-  
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-  
-        .title {
-          font-size: 10px;
-          font-weight: bold;
-          color: #777;
-          margin-top: 15px;
-          margin-bottom: 5px;
-          letter-spacing: 0.08em;
-        }
-  
-        /* li is only a wrapper now */
-        li {
-          padding: 0;
-          margin: 0;
-  
-          /* the actual clickable item */
-          .navLink {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-items: center;
-  
-            height: 50px;
-            width: 50px;
-            padding: 10px;
-            border-radius: 25px;
-  
-            text-decoration: none;
-            cursor: pointer;
-  
-            transition: background-color 0.2s ease, transform 0.06s ease;
-  
-            .icon {
-              font-size: 30px;
-              color: #555;
-            }
-  
-            span {
-              font-size: 11px;
-              font-weight: 600;
-              color: #888;
-            }
-  
-            &:hover {
-              background-color: rgb(37, 37, 37);
-              border-radius: 25px;
-            }
-  
-            &:active {
-              transform: scale(0.90);
-            }
-  
-            &.active {
-              background-color: rgb(54, 54, 54);
-  
-              .icon,
-              span {
-                color: #fbff00;
-                font-weight: 700;
-              }
-            }
-          }
-        }
-      }
-    }
-  
-    /* ===== BOTTOM ===== */
-    .bottom {
-      display: flex;
-      align-items: center;
-      margin: 10px;
-  
-      .colorOption {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        border: 1px solid goldenrod;
-        cursor: pointer;
-        margin: 5px;
-  
-        &:nth-child(1) {
-          background-color: rgb(35, 35, 35);
-        }
-  
-        &:nth-child(2) {
-          background-color: rgb(255, 234, 113);
-        }
-      }
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.sidebarHeader {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+
+  .brand {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    .brandText {
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
-  
+
+  .headerActions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+
+  &:hover {
+    background: var(--hover);
+  }
+}
+
+/* Mobile close is hidden on desktop */
+.mobileCloseBtn {
+  display: none;
+}
+
+.nav {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 0 10px;
+  margin-top: 6px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  text-decoration: none;
+  color: var(--text);
+
+  transition: background-color 180ms ease, color 180ms ease;
+
+  .icon {
+    font-size: 22px;
+    color: var(--muted);
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: 650;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  &.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+
+    .icon {
+      color: var(--accent-ink);
+    }
+  }
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.footerChip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dotTheme {
+    background: var(--accent);
+  }
+
+  .chipLabel {
+    font-weight: 650;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Accent dots */
+.accentPicker {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.accentDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+
+  &.active {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+/* Map dot colors (independent of current accent) */
+.accentDot.yellow { background: #ffea71; }
+.accentDot.blue   { background: #4ea1ff; }
+.accentDot.green  { background: #5ee38b; }
+.accentDot.purple { background: #b28cff; }
+.accentDot.orange { background: #ffb86b; }
+
+/* ===== Collapsed mode (controlled by Layout class on .appLayout) ===== */
+.appLayout.sidebarCollapsed {
+  .sidebarHeader .brandText {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+  }
+
+  .sectionTitle {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .navLink {
+    justify-content: center;
+    gap: 0;
+
+    .label {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+  }
+
+  .footerChip .chipLabel {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+  }
+}
+
+/* ===== Mobile drawer mode ===== */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: min(85vw, 320px);
+    z-index: 40;
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+  }
+
+  .appLayout.mobileSidebarOpen .sidebar {
+    transform: translateX(0);
+  }
+
+  .mobileCloseBtn {
+    display: inline-flex;
+  }
+
+  /* On mobile: show expanded labels even if collapsed is true */
+  .appLayout.sidebarCollapsed {
+    .sidebarHeader .brandText {
+      opacity: 1;
+      width: auto;
+    }
+
+    .sectionTitle {
+      opacity: 1;
+      height: auto;
+      margin-top: 6px;
+      padding: 0 10px;
+    }
+
+    .navLink {
+      justify-content: flex-start;
+      gap: 12px;
+
+      .label {
+        opacity: 1;
+        width: auto;
+        pointer-events: auto;
+      }
+    }
+
+    .footerChip .chipLabel {
+      opacity: 1;
+      width: auto;
+    }
+  }
+}

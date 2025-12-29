@@ -1,16 +1,30 @@
-.home {
-    display: flex;
-    
-    .homeContainer{
-        flex: 6;
-
-        .homeContent{
-
-            .widgets{
-                display: flex;
-                padding: 20px;
-                gap: 20px;
-            }
-        }
+.homePage {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .homeContent {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .widgets {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  
+  /* Tablet */
+  @media (max-width: 1024px) {
+    .widgets {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-}
+  }
+  
+  /* Phone */
+  @media (max-width: 600px) {
+    .widgets {
+      grid-template-columns: 1fr;
+    }
+  }
+  

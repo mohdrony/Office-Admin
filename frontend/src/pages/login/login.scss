@@ -1,0 +1,117 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: rgba(230, 230, 230, 0.92);
+  }
+  
+  .loginHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      font-size: 18px;
+    }
+  
+    .subtitle {
+      color: rgba(230, 230, 230, 0.6);
+      font-size: 13px;
+    }
+  }
+  
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  
+    .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(230, 230, 230, 0.65);
+      letter-spacing: 0.04em;
+    }
+  
+    input {
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(230, 230, 230, 0.92);
+      padding: 0 12px;
+      outline: none;
+  
+      &::placeholder {
+        color: rgba(230, 230, 230, 0.45);
+      }
+  
+      &:focus {
+        border-color: rgba(255, 234, 113, 0.9);
+        box-shadow: 0 0 0 3px rgba(255, 234, 113, 0.18);
+      }
+    }
+  }
+  
+  .primaryBtn {
+    height: 44px;
+    border-radius: 12px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 800;
+    color: #111;
+    background: rgba(255, 234, 113, 0.92);
+  
+    &:hover {
+      background: rgba(255, 234, 113, 0.98);
+    }
+  
+    &:active {
+      transform: scale(0.99);
+    }
+  }
+  
+  .metaRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(230, 230, 230, 0.7);
+  
+    input {
+      accent-color: rgba(255, 234, 113, 0.92);
+    }
+  }
+  
+  .link {
+    font-size: 12px;
+    color: rgba(255, 234, 113, 0.95);
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .loginFooter {
+    .hint {
+      font-size: 12px;
+      color: rgba(230, 230, 230, 0.5);
+    }
+  }
+  

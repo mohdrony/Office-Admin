@@ -1,0 +1,39 @@
+/* Base tokens used across the app */
+:root {
+    --bg: #0c0c0c;
+    --panel: #171717;
+    --border: rgba(255, 255, 255, 0.08);
+    --text: rgba(230, 230, 230, 0.92);
+    --muted: rgba(230, 230, 230, 0.62);
+    --hover: rgba(255, 255, 255, 0.06);
+  
+    /* Accent defaults */
+    --accent: #ffea71;       /* yellow default */
+    --accent-ink: #111;      /* text on accent */
+  }
+  
+  /* Light theme */
+  :root[data-theme="light"] {
+    --bg: #f6f6f6;
+    --panel: #ffffff;
+    --border: rgba(0, 0, 0, 0.10);
+    --text: rgba(15, 15, 15, 0.92);
+    --muted: rgba(15, 15, 15, 0.60);
+    --hover: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Accent options */
+  :root[data-accent="yellow"] { --accent: #ffea71; --accent-ink: #111; }
+  :root[data-accent="blue"]   { --accent: #4ea1ff; --accent-ink: #07111f; }
+  :root[data-accent="green"]  { --accent: #5ee38b; --accent-ink: #06140c; }
+  :root[data-accent="purple"] { --accent: #b28cff; --accent-ink: #0f0820; }
+  :root[data-accent="orange"] { --accent: #ffb86b; --accent-ink: #1a0f05; }
+  
+  /* Helpful global defaults */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+  }
+  

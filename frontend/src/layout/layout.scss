@@ -1,0 +1,57 @@
+:root {
+    --sidebar-expanded: 240px;
+    --sidebar-collapsed: 72px;
+    --navbar-height: 56px;
+  }
+  
+  .appLayout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: var(--sidebar-expanded) 1fr;
+    transition: grid-template-columns 180ms ease;
+  }
+  
+  /* Desktop collapsed (icons only) */
+  .appLayout.sidebarCollapsed {
+    grid-template-columns: var(--sidebar-collapsed) 1fr;
+  }
+  
+  .contentArea {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page {
+    min-width: 0;
+    padding: 16px;
+  }
+  
+  /* Scrim overlay for mobile drawer */
+  .scrim {
+    display: none;
+  }
+  
+  /* Mobile behavior */
+  @media (max-width: 768px) {
+    .appLayout {
+      grid-template-columns: 1fr; /* sidebar becomes overlay */
+    }
+  
+    .scrim {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 30;
+    }
+  
+    .appLayout.mobileSidebarOpen .scrim {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+  
