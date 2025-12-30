@@ -1,3 +1,4 @@
+// src/components/sidebar/Sidebar.jsx
 import "./sidebar.scss";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../../theme/ThemeProvider.jsx";
@@ -65,7 +66,7 @@ export default function Sidebar({
             {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </button>
 
-          {/* Mobile close button (shown only in mobile drawer mode via CSS) */}
+          {/* Mobile close button */}
           <button
             type="button"
             className="iconBtn mobileCloseBtn"
@@ -83,7 +84,9 @@ export default function Sidebar({
           <div className="sectionTitle">MAIN</div>
 
           <NavLink to="/" end className={navClass} onClick={handleNavClick}>
-            <DashboardCustomizeIcon className="icon" />
+            <span className="iconWrap">
+              <DashboardCustomizeIcon className="icon" />
+            </span>
             <span className="label">Dashboard</span>
           </NavLink>
         </div>
@@ -92,17 +95,23 @@ export default function Sidebar({
           <div className="sectionTitle">BACKOFFICE</div>
 
           <NavLink to="/timeline" className={navClass} onClick={handleNavClick}>
-            <ViewTimelineIcon className="icon" />
+            <span className="iconWrap">
+              <ViewTimelineIcon className="icon" />
+            </span>
             <span className="label">Timeline</span>
           </NavLink>
 
           <NavLink to="/calendar" className={navClass} onClick={handleNavClick}>
-            <CalendarMonthIcon className="icon" />
+            <span className="iconWrap">
+              <CalendarMonthIcon className="icon" />
+            </span>
             <span className="label">Calendar</span>
           </NavLink>
 
           <NavLink to="/projects" className={navClass} onClick={handleNavClick}>
-            <AccountTreeIcon className="icon" />
+            <span className="iconWrap">
+              <AccountTreeIcon className="icon" />
+            </span>
             <span className="label">Projects</span>
           </NavLink>
         </div>
@@ -111,12 +120,16 @@ export default function Sidebar({
           <div className="sectionTitle">MANAGE</div>
 
           <NavLink to="/team" className={navClass} onClick={handleNavClick}>
-            <GroupIcon className="icon" />
+            <span className="iconWrap">
+              <GroupIcon className="icon" />
+            </span>
             <span className="label">Team</span>
           </NavLink>
 
           <NavLink to="/settings" className={navClass} onClick={handleNavClick}>
-            <DisplaySettingsIcon className="icon" />
+            <span className="iconWrap">
+              <DisplaySettingsIcon className="icon" />
+            </span>
             <span className="label">Settings</span>
           </NavLink>
         </div>

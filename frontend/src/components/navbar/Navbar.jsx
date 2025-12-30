@@ -1,3 +1,4 @@
+// src/components/navbar/Navbar.jsx
 import "./navbar.scss";
 
 import SearchIcon from "@mui/icons-material/Search";
