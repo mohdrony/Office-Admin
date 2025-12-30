@@ -1,24 +1,408 @@
+/* src/pages/timeline/timeline.scss */
+
 .timelinePage {
   width: 100%;
   min-width: 0;
 }
 
-.timelineContent {
-  position: relative;
-  padding: 20px 0;
-  background-color: #232323;
-
-  // Layout navbar is 56px in our setup
-  min-height: calc(100vh - 56px);
+.timelineSurface {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-.timelineRows {
+/* ================= Toolbar ================= */
+.tlToolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  background: var(--tl-sticky-bg, var(--panel));
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+
+  .title {
+    font-weight: 650;
+  }
+
+  .muted {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .iconBtn {
+    height: 32px;
+    width: 32px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+
+  .ghostBtn {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .segmented {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.06);
+
+    button {
+      height: 32px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+
+      &:hover {
+        background: var(--hover);
+        color: var(--text);
+      }
+
+      &.active {
+        background: var(--hover);
+        color: var(--text);
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+/* ================= Board ================= */
+.tlBoard {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) 1fr;
+  min-width: 0;
+}
+
+.projectCol {
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  position: sticky;
+  left: 0;
+  z-index: 7;
+
+  .projectColHeader {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-weight: 650;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    position: sticky;
+    top: 0;
+    z-index: 8;
+  }
+
+  .projectRows {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* this wrapper ensures left-side rows match timeline row heights */
+.projectRowShell {
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  cursor: pointer;
+}
+
+.timelineCol {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tlScroll {
   position: relative;
-  z-index: 2;
+}
+
+/* ================= Scale Header ================= */
+.tlScaleHeader {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+
+  display: flex;
+  height: 44px;
+
+  background: var(--tl-sticky-bg, var(--panel));
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.tlColHeader {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  padding: 0 6px;
+  border-right: 1px solid var(--tl-grid-line, var(--border));
 
-  // keep rows below the timeline header
-  padding-top: 48px; // match timelineHeader height
+  .top {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .bottom {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.1;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  &.isWeekend {
+    background: var(--tl-weekend, rgba(0, 0, 0, 0.03));
+  }
+}
+
+/* ================= Grid ================= */
+.tlGridPreview {
+  display: flex;
+  flex-direction: column;
+}
+
+/* each row is its own clipping container */
+.tlTimeRow {
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+
+  /* keep overlays inside THIS row */
+  overflow: hidden;
+
+  cursor: pointer;
+}
+
+.gridCol {
+  border-right: 1px solid var(--tl-grid-line, var(--border));
+  background: transparent;
+
+  &.isWeekend {
+    background: var(--tl-weekend, rgba(0, 0, 0, 0.03));
+  }
+}
+
+/* ================= Today Marker ================= */
+.todayLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--tl-today, var(--accent));
+  opacity: 0.9;
+}
+
+/* ================= Phase Bars ================= */
+.phaseBarsLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.phaseBar {
+  position: absolute;
+  height: var(--bar-h, 14px);
+  border-radius: 999px;
+  opacity: 0.95;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  min-width: 6px;
+
+  /* bars start after milestone band */
+  top: calc(
+    var(--ms-band-h, 26px) +
+      (var(--lane, 0) * (var(--bar-h, 14px) + var(--gap, 6px)))
+  );
+}
+
+.phaseText {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: 750;
+  color: rgba(0, 0, 0, 0.86);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================= Milestones ================= */
+/* The band lives INSIDE the row, so nothing overlaps other projects */
+.milestonesLayer {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: var(--ms-band-h, 26px);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* icon pinned at its own lane height (varied Y again) */
+.milestone {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: auto;
+
+  /* icon lane (from data) */
+  top: calc(6px + (var(--ilane, 0) * 18px));
+}
+
+.milestoneIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.08);
+
+  svg {
+    font-size: 14px;
+  }
+}
+
+:root[data-theme="light"] .milestoneIcon {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Label should be ABOVE the icon and stack upward */
+.milestoneLabel {
+  position: absolute;
+
+  left: 12px;
+
+  /* stack UPWARDS: lane 0 is closest to icon */
+  bottom: calc(22px + (var(--mlane, 0) * 18px));
+
+  max-width: 260px;
+  padding: 4px 8px;
+  border-radius: 999px;
+
+  background: rgba(25, 25, 25, 0.82);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: none;
+}
+
+/* Expanded: show labels */
+.tlTimeRow.isExpanded .milestoneLabel {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Connector line: from icon to label (left side of label), visible in both themes */
+.milestoneLabel::before {
+  /* horizontal stub into label */
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.milestoneLabel::after {
+  /* vertical drop to icon area */
+  content: "";
+  position: absolute;
+  left: -12px;
+  bottom: -18px;
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.40);
+}
+
+:root[data-theme="light"] .milestoneLabel::before {
+  background: rgba(255, 255, 255, 0.55);
+}
+:root[data-theme="light"] .milestoneLabel::after {
+  background: rgba(255, 255, 255, 0.40);
+}
+
+/* ================= Mobile ================= */
+@media (max-width: 720px) {
+  .tlToolbar {
+    grid-template-columns: 1fr;
+    justify-items: start;
+
+    .center {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+  }
+
+  .tlBoard {
+    grid-template-columns: minmax(120px, 160px) 1fr;
+  }
+
+  .projectCol .projectColHeader {
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .tlScaleHeader {
+    height: 40px;
+  }
+}
+
+.helperText {
+  margin: 10px 12px 12px;
+  color: var(--muted);
+  font-size: 12px;
 }
