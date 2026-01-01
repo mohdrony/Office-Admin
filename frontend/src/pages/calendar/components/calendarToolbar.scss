@@ -1,0 +1,93 @@
+/* src/pages/calendar/components/calendarToolbar.scss */
+
+.calToolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: grid;
+  grid-template-columns: 240px 1fr 240px;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+
+  .title {
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .muted {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .center {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.tlBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover);
+  }
+}
+
+.segmented {
+  justify-self: end;
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.segBtn {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  &.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+}
+
+@media (max-width: 820px) {
+  .calToolbar {
+    grid-template-columns: 1fr;
+    gap: 8px;
+
+    .center {
+      justify-content: flex-start;
+    }
+    .right {
+      justify-content: flex-start;
+    }
+  }
+}

@@ -1,20 +1,151 @@
+/* src/pages/calendar/calendar.scss */
+
 .calendarPage {
-    width: 100%;
-    min-width: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.calendarSurface {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.calHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+
+  .title {
+    font-weight: 800;
   }
-  
-  .calendarContent {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    width: 100%;
-    min-height: 60px;
-  
-    padding: 20px;
-    border-radius: 25px;
-    background-color: blanchedalmond;
-  
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  .muted {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
   }
-  
+}
+
+.calCanvas {
+  // keep it clean; Schedule-X handles internal layout
+  padding: 8px;
+}
+
+/* Schedule-X requires wrapper to have height/width */
+.calCanvas .sx-react-calendar-wrapper {
+  width: 100%;
+  height: calc(100vh - 56px - 32px - 56px); 
+  /* viewport - navbar - page padding - header approx */
+  min-height: 640px;
+}
+
+.calendarSurface .sx__calendar-header,
+.calendarSurface .sx__topbar {
+  display: none !important;
+}
+
+.calLoading {
+  padding: 10px 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+/* =========================================================
+   Schedule-X visual integration
+   ========================================================= */
+
+/* Base wrapper */
+.calendarSurface {
+  --sx-color-primary: var(--accent);
+  --sx-color-on-primary: var(--accent-ink);
+  --sx-color-background: var(--panel);
+  --sx-color-surface: var(--panel);
+  --sx-color-border: var(--border);
+  --sx-color-muted: var(--muted);
+}
+
+/* Remove “boxed widget” feeling */
+.calendarSurface .sx-react-calendar-wrapper {
+  background: var(--panel);
+  border-radius: 0;
+}
+
+/* Grid lines: lighter, calmer */
+.calendarSurface .sx__time-grid,
+.calendarSurface .sx__month-grid {
+  border-color: var(--border);
+}
+
+/* Hour labels */
+.calendarSurface .sx__time-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Day headers (Mon Tue Wed…) */
+.calendarSurface .sx__day-header {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Today indicator — subtle, not shouting */
+.calendarSurface .sx__today {
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
+}
+
+/* Remove strong focus outlines */
+.calendarSurface .sx__cell:focus,
+.calendarSurface .sx__event:focus {
+  outline: none;
+}
+
+/* =========================================================
+   Event styling (Timeline-like)
+   ========================================================= */
+
+.calendarSurface .sx__event {
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+  background: color-mix(in oklab, var(--accent) 18%, var(--panel));
+  color: var(--text);
+
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 650;
+
+  padding: 6px 8px;
+}
+
+/* Event title */
+.calendarSurface .sx__event-title {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Event time */
+.calendarSurface .sx__event-time {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Hover = same philosophy as sidebar/buttons */
+.calendarSurface .sx__event:hover {
+  background: color-mix(in oklab, var(--accent) 26%, var(--panel));
+}
+
+/* Background cells */
+.calendarSurface .sx__cell {
+  background: transparent;
+}
+
+/* Alternate rows slightly (very subtle) */
+.calendarSurface .sx__time-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}

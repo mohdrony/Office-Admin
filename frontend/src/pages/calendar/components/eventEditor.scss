@@ -1,0 +1,143 @@
+/* src/pages/calendar/components/eventEditor.scss */
+
+.eeScrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 80;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+}
+
+.eeModal {
+  width: min(520px, 100%);
+  border-radius: 16px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.eeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+
+  .eeTitle {
+    font-weight: 800;
+  }
+}
+
+.eeIconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: var(--hover);
+  }
+}
+
+.eeBody {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eeField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eeLabel {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.eeInput {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+
+  padding: 10px 12px;
+  outline: none;
+
+  &:focus {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  }
+}
+
+.eeGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eeFooter {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.eeBtn {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  padding: 10px 12px;
+  font-weight: 750;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+
+    &:hover {
+      filter: brightness(1.02);
+    }
+  }
+
+  &.ghost {
+    background: transparent;
+  }
+}
