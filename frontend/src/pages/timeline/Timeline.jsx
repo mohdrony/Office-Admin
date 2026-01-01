@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./timeline.scss";
 
 import TimelineRow from "./components/TimelineRow";
+import CreateProjectModal from "./components/CreateProjectModal";
 import { projectsDummy } from "../../data/projectsDummy";
 
 import useTimelineScale, { TL_MODE } from "./hooks/useTimelineScale";
@@ -11,6 +12,7 @@ import { assignPhaseLanes } from "./utils/laneUtils";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import TodayRoundedIcon from "@mui/icons-material/TodayRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded"; // meeting
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded"; // submission
@@ -100,6 +102,7 @@ function assignMilestoneLabelLanesLocal(milestones, scale) {
 const Timeline = () => {
   const [mode, setMode] = useState(TL_MODE.YEAR);
   const [cursorDate, setCursorDate] = useState(() => new Date());
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   const canvasRef = useRef(null);
   const [availableWidthPx, setAvailableWidthPx] = useState(0);
@@ -214,13 +217,14 @@ const Timeline = () => {
 
       const msBandH = expanded
         ? msBase +
-          (Math.max(iconLaneMax + 1, msLabelLaneCount) * msLaneStep + 10)
+        (Math.max(iconLaneMax + 1, msLabelLaneCount) * msLaneStep + 10)
         : msBase + (iconLaneMax > 0 ? (iconLaneMax + 1) * 10 : 0);
 
       // row height = ms band + phase lanes + bottom pad
       const padBottom = 12;
       const lanes = Math.max(1, phaseLaneCount);
-      const rowH = msBandH + lanes * barH + (lanes - 1) * gap + padBottom;
+      const calculatedH = msBandH + lanes * barH + (lanes - 1) * gap + padBottom;
+      const rowH = Math.max(100, calculatedH);
 
       return {
         project: p,
@@ -242,6 +246,14 @@ const Timeline = () => {
         <div className="tlToolbar">
           <div className="left">
             <span className="title">Timeline</span>
+            <button
+              type="button"
+              className="ghostBtn"
+              onClick={() => setCreateModalOpen(true)}
+            >
+              <AddRoundedIcon fontSize="small" style={{ color: "var(--accent)" }} />
+              <span>Create Project</span>
+            </button>
           </div>
 
           <div className="center">
@@ -315,9 +327,8 @@ const Timeline = () => {
               {rows.map((r) => (
                 <div
                   key={r.project.id}
-                  className={`projectRowShell ${
-                    r.expanded ? "isExpanded" : ""
-                  }`}
+                  className={`projectRowShell ${r.expanded ? "isExpanded" : ""
+                    }`}
                   style={{ height: `${r.rowH}px` }}
                   onClick={() => toggleExpanded(r.project.id)}
                 >
@@ -347,19 +358,19 @@ const Timeline = () => {
                     ) : null}
                   </div>
                 ))}
-
-                {/* Today marker */}
-                {scale.markers
-                  .filter((m) => m.type === "today")
-                  .map((m) => (
-                    <div
-                      key={`today-${m.date.toISOString()}`}
-                      className="todayLine"
-                      style={{ left: `${scale.dateToX(m.date)}px` }}
-                      title="Today"
-                    />
-                  ))}
               </div>
+
+              {/* Today marker (Moved outside header to span full height) */}
+              {scale.markers
+                .filter((m) => m.type === "today")
+                .map((m) => (
+                  <div
+                    key={`today-${m.date.toISOString()}`}
+                    className="todayLine"
+                    style={{ left: `${scale.dateToX(m.date)}px` }}
+                    title="Today"
+                  />
+                ))}
 
               {/* Rows */}
               <div className="tlGridPreview">
@@ -382,9 +393,8 @@ const Timeline = () => {
                       {scale.columns.map((c) => (
                         <div
                           key={`${p.id}-${c.key}`}
-                          className={`gridCol ${
-                            c.isWeekend ? "isWeekend" : ""
-                          }`}
+                          className={`gridCol ${c.isWeekend ? "isWeekend" : ""
+                            }`}
                           style={{ width: `${scale.colWidthPx}px` }}
                         />
                       ))}
@@ -399,9 +409,8 @@ const Timeline = () => {
                           return (
                             <div
                               key={ph.id}
-                              className={`phaseBar ${
-                                r.expanded ? "expanded" : "collapsed"
-                              }`}
+                              className={`phaseBar ${r.expanded ? "expanded" : "collapsed"
+                                }`}
                               style={{
                                 left: `${x}px`,
                                 width: `${w}px`,
@@ -459,6 +468,12 @@ const Timeline = () => {
           Milestones: icon pinned (lane-based Y), labels appear ABOVE and stack.
           Left project column now matches dynamic row heights again.
         </p>
+
+        <CreateProjectModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onSave={(data) => console.log("New Project Data:", data)}
+        />
       </div>
     </div>
   );

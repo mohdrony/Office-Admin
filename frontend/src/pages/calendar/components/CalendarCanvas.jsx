@@ -19,6 +19,7 @@ export default function CalendarCanvas({
   onReady,
   onClickDateTime: handleClickDateTime,
   onClickDate: handleClickDate,
+  onEventClick,
 }) {
   const eventsService = useMemo(() => createEventsServicePlugin(), []);
   const controls = useMemo(() => createCalendarControlsPlugin(), []);
@@ -69,6 +70,9 @@ export default function CalendarCanvas({
       },
       onClickDate(date) {
         handleClickDate?.(date);
+      },
+      onEventClick(calendarEvent) {
+        onEventClick?.(calendarEvent);
       },
     },
   });

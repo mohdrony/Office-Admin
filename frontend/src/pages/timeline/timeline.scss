@@ -39,6 +39,12 @@
     font-size: 12px;
   }
 
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
   .center {
     display: flex;
     align-items: center;
@@ -250,10 +256,7 @@
   min-width: 6px;
 
   /* bars start after milestone band */
-  top: calc(
-    var(--ms-band-h, 26px) +
-      (var(--lane, 0) * (var(--bar-h, 14px) + var(--gap, 6px)))
-  );
+  top: calc(var(--ms-band-h, 26px) + (var(--lane, 0) * (var(--bar-h, 14px) + var(--gap, 6px))));
 }
 
 .phaseText {
@@ -371,6 +374,7 @@
 :root[data-theme="light"] .milestoneLabel::before {
   background: rgba(255, 255, 255, 0.55);
 }
+
 :root[data-theme="light"] .milestoneLabel::after {
   background: rgba(255, 255, 255, 0.40);
 }

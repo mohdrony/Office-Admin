@@ -56,11 +56,29 @@ export default function useCalendarEvents() {
     setEvents(prev => [...prev, savedEvent]);
   }, []);
 
+  const updateEvent = useCallback((id, draft) => {
+    // 1. Convert DTO to Temporal
+    // draft: { title, startAt, endAt, calendarId, ... }
+
+    // We only update what IS passed.
+    const patch = {};
+    if (draft.title !== undefined) patch.title = draft.title;
+    if (draft.calendarId !== undefined) patch.calendarId = draft.calendarId;
+    if (draft.startAt) patch.start = Temporal.Instant.from(draft.startAt).toZonedDateTimeISO(TZ_DEFAULT);
+    if (draft.endAt) patch.end = Temporal.Instant.from(draft.endAt).toZonedDateTimeISO(TZ_DEFAULT);
+
+    setEvents(prev => prev.map(e => {
+      if (e.id === id) {
+        return { ...e, ...patch };
+      }
+      return e;
+    }));
+  }, []);
+
   return {
     isLoading,
     scheduleXEvents, // mapped list for Schedule-X
     createEvent,
-    // Removing update/delete for now as they require complex write-back to dummy structure
-    // and weren't the focus of the fix.
+    updateEvent,
   };
 }

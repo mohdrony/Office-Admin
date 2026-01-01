@@ -23,6 +23,8 @@ export default function EventEditor({
   mode = "create", // "create" | "edit"
   initialStart, // Temporal.ZonedDateTime
   initialEnd, // Temporal.ZonedDateTime
+  initialTitle = "",
+  initialCalendarId = "office",
   onClose,
   onSave,
   calendars = []
@@ -39,13 +41,13 @@ export default function EventEditor({
   useEffect(() => {
     if (!open) return;
 
-    setTitle(defaultTitle);
+    setTitle(mode === "create" ? defaultTitle : initialTitle);
     setStartVal(initialStart ? toLocalInputValue(initialStart) : "");
     setEndVal(initialEnd ? toLocalInputValue(initialEnd) : "");
-    setCalendarId("office");
+    setCalendarId(mode === "create" ? "office" : initialCalendarId);
     setAllDay(false);
     setDuration(1);
-  }, [open, initialStart, initialEnd, defaultTitle]);
+  }, [open, initialStart, initialEnd, defaultTitle, mode, initialTitle, initialCalendarId]);
 
   // Update end time when duration changes
   const updateEndFromDuration = (newDuration, startValue) => {

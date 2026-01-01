@@ -1,0 +1,114 @@
+.edScrim {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.edModal {
+    width: 400px;
+    max-width: 90vw;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.edHeader {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 8px 0;
+}
+
+.edActions {
+    display: flex;
+    gap: 4px;
+}
+
+.edIconBtn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background: var(--hover);
+        color: var(--text);
+    }
+}
+
+.edBody {
+    padding: 8px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.edTitleLine {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.edCalDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.edTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+}
+
+.edMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 24px;
+    /* Align with title text */
+    color: var(--muted);
+}
+
+.edMetaRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+
+    .edIcon {
+        font-size: 16px;
+        opacity: 0.7;
+    }
+}

@@ -7,6 +7,7 @@ import useCalendarEvents from "./hooks/useCalendarEvents";
 import CalendarCanvas from "./components/CalendarCanvas";
 import CalendarToolbar from "./components/CalendarToolbar";
 import EventEditor from "./components/EventEditor";
+import EventDetailModal from "./components/EventDetailModal";
 import { TZ_DEFAULT } from "./types";
 
 function toJSDate(anyTemporalOrString) {
@@ -72,7 +73,7 @@ function todayPlainDate() {
 
 
 export default function Calendar() {
-  const { isLoading, scheduleXEvents, createEvent } = useCalendarEvents();
+  const { isLoading, scheduleXEvents, createEvent, updateEvent } = useCalendarEvents();
 
   const [controls, setControls] = useState(null);
 
@@ -84,6 +85,12 @@ export default function Calendar() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [draftStart, setDraftStart] = useState(null);
   const [draftEnd, setDraftEnd] = useState(null);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftCalendarId, setDraftCalendarId] = useState("office");
+  const [draftId, setDraftId] = useState(null); // ID of event being edited
+  const [editMode, setEditMode] = useState("create"); // "create" | "edit"
+
+  const [selectedEvent, setSelectedEvent] = useState(null); // For detail modal
 
   const openCreateAt = useCallback((zdt) => {
     // Round to nearest half hour
@@ -95,25 +102,16 @@ export default function Calendar() {
       newMinute = 30;
     } else if (minute >= 45) {
       newMinute = 0;
-      // Increment hour if rounding up, but simplest is usually floor/ceil.
-      // User asked: "if click between 7-8 default 7" -> Suggests floor logic or nearest slot logic?
-      // "click somewhere between 7-8 default start time would say 7 and end 8"
-      // Actually user said "half hour would be nice".
-      // Let's implement rounding to nearest 30 mins (00 or 30).
-
-      // Actually, if minute >= 45, we should go to next hour? 
-      // User example "between 7-8 default 7" suggests flooring?
-      // "if user clicks somewhere between 7 - 8 the default start time would say 7"
-      // BUT "i don't want exactly minute accurate but half hour would be nice"
-      // Let's stick to standard nearest half-hour snapping:
-      // 0-14 -> 00, 15-44 -> 30, 45-59 -> next hour 00
       zdt = zdt.add({ hours: 1 });
     }
 
     const start = zdt.with({ minute: newMinute, second: 0, millisecond: 0 });
     setDraftStart(start);
     setDraftEnd(start.add({ hours: 1 }));
+    setDraftTitle("");
+    setDraftCalendarId("office");
     setEditorOpen(true);
+    setEditMode("create");
   }, []);
 
   const openCreateAllDay = useCallback((plainDate) => {
@@ -121,8 +119,53 @@ export default function Calendar() {
     const start = plainDate.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "09:00" });
     setDraftStart(start);
     setDraftEnd(start.add({ hours: 1 }));
+    setDraftTitle("");
+    setDraftCalendarId("office");
     setEditorOpen(true);
+    setEditMode("create");
   }, []);
+
+  const handleEventClick = useCallback((calendarEvent) => {
+    setSelectedEvent(calendarEvent);
+  }, []);
+
+  const handleEditFromDetail = useCallback(() => {
+    if (!selectedEvent) return;
+
+    // selectedEvent has { id, title, start, end, calendarId } (strings)
+    // We need to parse strings back to Temporal/Date for the Editor
+    // Our Editor expects Temporal.ZonedDateTime for initialStart/End
+    // But let's check what format the event strings are in. Likely YYYY-MM-DD HH:mm
+
+    // Simplest is to pass ISO strings if Editor supports it, or parse here.
+    // EventEditor uses `toLocalInputValue` which expects ZonedDateTime.
+    // Let's create ZDT from the strings.
+
+    try {
+      const start = Temporal.PlainDateTime.from(selectedEvent.start).toZonedDateTime(TZ_DEFAULT);
+      const end = Temporal.PlainDateTime.from(selectedEvent.end).toZonedDateTime(TZ_DEFAULT);
+
+      setDraftStart(start);
+      setDraftEnd(end);
+      setDraftTitle(selectedEvent.title);
+      setDraftCalendarId(selectedEvent.calendarId);
+      setDraftId(selectedEvent.id);
+      setEditMode("edit"); // We need to update Editor to support this or pass it properly
+      // For now, let's just re-use the create flow but pre-fill data effectively
+      // or we can add an "edit" mode to Editor if we want to support updates (requires ID).
+
+      // We'll set the title manually via props or state? 
+      // EventEditor takes `initialStart/End`. Title is internal state.
+      // We might need to refactor EventEditor slightly to accept `initialValues` prop object.
+      // FOR NOW: Let's just open it and see. The user said "like a detail view... with edit button".
+      // We actually need to pass the *existing* event ID to the update function.
+
+      setEditorOpen(true);
+      setSelectedEvent(null); // close detail
+    } catch (e) {
+      console.error("Failed to parse event for editing", e);
+    }
+  }, [selectedEvent]);
 
 
   const title = useMemo(
@@ -225,28 +268,42 @@ export default function Calendar() {
           }}
           onClickDateTime={openCreateAt}
           onClickDate={openCreateAllDay}
+          onEventClick={handleEventClick}
+        />
+
+        <EventDetailModal
+          isOpen={!!selectedEvent}
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          onEdit={handleEditFromDetail}
+          calendars={CALENDARS}
         />
 
         <EventEditor
           open={editorOpen}
-          mode="create"
+          mode={editMode}
           initialStart={draftStart}
           initialEnd={draftEnd}
+          initialTitle={draftTitle}
+          initialCalendarId={draftCalendarId}
           onClose={() => setEditorOpen(false)}
           calendars={CALENDARS} // Pass calendars for selector
           onSave={({ title, start, end, allDay, calendarId }) => {
             // convert Temporal -> your DTO shape (ISO strings with offset)
-            const id = crypto.randomUUID();
-
-            createEvent({
-              id,
+            const dto = {
               title,
               allDay,
-              startAt: start.toString(), // includes [Europe/Berlin]
+              startAt: start.toString(),
               endAt: end.toString(),
               timezone: TZ_DEFAULT,
               calendarId,
-            });
+            };
+
+            if (editMode === "edit" && draftId) {
+              updateEvent(draftId, dto);
+            } else {
+              createEvent({ ...dto, id: crypto.randomUUID() });
+            }
 
             setEditorOpen(false);
           }}
