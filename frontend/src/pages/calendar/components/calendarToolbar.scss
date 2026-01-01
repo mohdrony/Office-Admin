@@ -6,7 +6,7 @@
   z-index: 10;
 
   display: grid;
-  grid-template-columns: 240px 1fr 240px;
+  grid-template-columns: 220px 1fr 220px;
   align-items: center;
   gap: 10px;
 
@@ -15,66 +15,102 @@
   border-bottom: 1px solid var(--border);
 
   .title {
-    font-weight: 800;
-    line-height: 1.1;
+    font-weight: 650;
   }
+
   .muted {
     color: var(--muted);
     font-size: 12px;
-    margin-top: 2px;
   }
 
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Center Controls */
   .center {
     display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  /* --- Button Styles copied from Timeline --- */
+
+  /* Rounded square icon button */
+  .iconBtn {
+    height: 32px;
+    width: 32px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+
+    &:hover {
+      background: var(--hover);
+    }
+  }
+
+  /* Pill button with icon (Today) */
+  .ghostBtn {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
-  }
-}
 
-.tlBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  &:hover {
-    background: var(--hover);
-  }
-}
-
-.segmented {
-  justify-self: end;
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.segBtn {
-  border: 0;
-  background: transparent;
-  color: var(--text);
-  padding: 10px 12px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-
-  &:hover {
-    background: var(--hover);
+    &:hover {
+      background: var(--hover);
+    }
   }
 
-  &.active {
-    background: var(--accent);
-    color: var(--accent-ink);
+  /* Segmented Control (Day/Week/Month) */
+  .segmented {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.06);
+
+    button {
+      height: 32px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+
+      &:hover {
+        background: var(--hover);
+        color: var(--text);
+      }
+
+      &.active {
+        background: var(--hover);
+        color: var(--text);
+        font-weight: 700;
+      }
+    }
   }
 }
 
@@ -85,9 +121,87 @@
 
     .center {
       justify-content: flex-start;
+      flex-wrap: wrap;
     }
-    .right {
-      justify-content: flex-start;
+  }
+}
+
+/* Dropdown Menu */
+.calFilterRoot {
+  position: relative;
+}
+
+.calFilterMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 200px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 8px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calFilterBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.calFilterItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text);
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  input[type="checkbox"] {
+    accent-color: var(--accent);
+  }
+}
+
+.calDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.calFilterDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.calFilterAction {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: default;
+  /* Disabled for now */
+
+  &:not(:disabled) {
+    cursor: pointer;
+    color: var(--text);
+
+    &:hover {
+      background: var(--hover);
     }
   }
 }

@@ -1,6 +1,5 @@
 // src/pages/calendar/components/CalendarCanvas.jsx
 
-import "temporal-polyfill/global";
 import "@schedule-x/theme-default/dist/index.css";
 
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
@@ -25,64 +24,89 @@ export default function CalendarCanvas({
   const controls = useMemo(() => createCalendarControlsPlugin(), []);
 
   const calendarApp = useCalendarApp({
-  calendars: {
-  office: {
-    label: "Office",
-    colorName: "office",
-    isVisible: true,
-    lightColors: {
-      main: "#4ea1ff",
-      container: "#eaf2ff",
-      onContainer: "#0b1a33",
+    calendars: {
+      office: {
+        label: "Office",
+        colorName: "office",
+        isVisible: true,
+        lightColors: {
+          main: "#4ea1ff",
+          container: "#eaf2ff",
+          onContainer: "#0b1a33",
+        },
+        darkColors: {
+          main: "#4ea1ff",
+          container: "#142033",
+          onContainer: "#eaf2ff",
+        },
+      },
+      projects: {
+        label: "Projects",
+        colorName: "projects",
+        isVisible: true,
+        lightColors: {
+          main: "#5ee38b",
+          container: "#e9fff1",
+          onContainer: "#062112",
+        },
+        darkColors: {
+          main: "#5ee38b",
+          container: "#11261a",
+          onContainer: "#e9fff1",
+        },
+      },
     },
-    darkColors: {
-      main: "#4ea1ff",
-      container: "#142033",
-      onContainer: "#eaf2ff",
-    },
-  },
-  projects: {
-    label: "Projects",
-    colorName: "projects",
-    isVisible: true,
-    lightColors: {
-      main: "#5ee38b",
-      container: "#e9fff1",
-      onContainer: "#062112",
-    },
-    darkColors: {
-      main: "#5ee38b",
-      container: "#11261a",
-      onContainer: "#e9fff1",
-    },
-  },
-},
 
-  views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
-  events: [],
-  plugins: [eventsService, controls],
-  callbacks: {
-    onRangeUpdate(range) {
-      onReady?.({ calendarApp, controls, range });
+    views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
+    events: [],
+    plugins: [eventsService, controls],
+    callbacks: {
+      onRangeUpdate(range) {
+        onReady?.({ calendarApp, controls, range });
+      },
+      onClickDateTime(dateTime) {
+        handleClickDateTime?.(dateTime);
+      },
+      onClickDate(date) {
+        handleClickDate?.(date);
+      },
     },
-    onClickDateTime(dateTime) {
-      handleClickDateTime?.(dateTime);
-    },
-    onClickDate(date) {
-      handleClickDate?.(date);
-    },
-  },
-});
+  });
 
 
   useEffect(() => {
     onReady?.({ calendarApp, controls });
   }, [calendarApp, controls, onReady]);
 
-  // expose calendarApp + controls to parent (Toolbar)
+  // Sync events prop with Schedule-X
+  // Sync events prop with Schedule-X
   useEffect(() => {
-    onReady?.({ calendarApp, controls });
-  }, [calendarApp, controls, onReady]);
+    if (!events) return;
+
+    try {
+      // Check if the plugin has a bulk set method (some versions do)
+      if (eventsService && typeof eventsService.set === 'function') {
+        eventsService.set(events);
+      } else if (eventsService) {
+        // Fallback: clear and add
+        const current = eventsService.getAll?.();
+        if (Array.isArray(current)) {
+          current.forEach(e => eventsService.remove?.(e.id));
+        }
+
+        events.forEach(e => {
+          // Ensure mandatory fields
+          if (e.id && e.start && e.end) {
+            eventsService.add?.(e);
+          } else {
+            console.warn("Skipping invalid event", e);
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Failed to update calendar events:", err);
+    }
+  }, [events, eventsService]);
 
   return (
     <div className="calCanvas">

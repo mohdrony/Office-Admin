@@ -1,0 +1,27 @@
+/* src/pages/calendar/calendarOverrides.css */
+
+/* 1. Weekend Styling (matching timeline subtler look) */
+.sx__saturday,
+.sx__sunday {
+    background-color: var(--tl-weekend, rgba(0, 0, 0, 0.03));
+}
+
+/* Dark mode weekend adjustment if needed, assuming class on body or container */
+/* But sticking to light mode focused for now based on user context */
+
+
+/* 2. Business Hours Highlighting (9:00 - 17:00) 
+   Exceedingly subtle distinction as requested
+*/
+.sx__time-grid-day:not(.sx__saturday):not(.sx__sunday) {
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.015) 0%,
+            /* 00:00 - 09:00 (Very subtle grey) */
+            rgba(0, 0, 0, 0.015) 37.5%,
+            rgba(255, 255, 255, 0) 37.5%,
+            /* 09:00 - 17:00 (Transparent) */
+            rgba(255, 255, 255, 0) 70.833%,
+            rgba(0, 0, 0, 0.015) 70.833%,
+            /* 17:00 - 24:00 (Very subtle grey) */
+            rgba(0, 0, 0, 0.015) 100%);
+}

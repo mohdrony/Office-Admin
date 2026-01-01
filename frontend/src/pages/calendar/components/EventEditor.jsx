@@ -25,12 +25,16 @@ export default function EventEditor({
   initialEnd, // Temporal.ZonedDateTime
   onClose,
   onSave,
+  calendars = []
 }) {
   const defaultTitle = mode === "create" ? "New event" : "Edit event";
 
   const [title, setTitle] = useState(defaultTitle);
   const [startVal, setStartVal] = useState("");
   const [endVal, setEndVal] = useState("");
+  const [calendarId, setCalendarId] = useState("office");
+  const [allDay, setAllDay] = useState(false);
+  const [duration, setDuration] = useState(1); // in hours
 
   useEffect(() => {
     if (!open) return;
@@ -38,7 +42,29 @@ export default function EventEditor({
     setTitle(defaultTitle);
     setStartVal(initialStart ? toLocalInputValue(initialStart) : "");
     setEndVal(initialEnd ? toLocalInputValue(initialEnd) : "");
+    setCalendarId("office");
+    setAllDay(false);
+    setDuration(1);
   }, [open, initialStart, initialEnd, defaultTitle]);
+
+  // Update end time when duration changes
+  const updateEndFromDuration = (newDuration, startValue) => {
+    if (!startValue) return;
+    try {
+      const start = Temporal.PlainDateTime.from(startValue);
+      // Add duration in minutes (fractional hours supported)
+      const end = start.add({ minutes: newDuration * 60 });
+      setEndVal(toLocalInputValue(end));
+    } catch (e) {
+      // ignore invalid start
+    }
+  };
+
+  const handleDurationChange = (delta) => {
+    const newDur = Math.max(0.5, duration + delta);
+    setDuration(newDur);
+    updateEndFromDuration(newDur, startVal);
+  };
 
   const canSave = useMemo(() => {
     return title.trim().length > 0 && startVal && endVal;
@@ -47,19 +73,20 @@ export default function EventEditor({
   if (!open) return null;
 
   const handleSave = () => {
-  const startPlain = Temporal.PlainDateTime.from(startVal);
-  const endPlain = Temporal.PlainDateTime.from(endVal);
+    const startPlain = Temporal.PlainDateTime.from(startVal);
+    const endPlain = Temporal.PlainDateTime.from(endVal);
 
-  const start = startPlain.toZonedDateTime(TZ_DEFAULT);
-  const end = endPlain.toZonedDateTime(TZ_DEFAULT);
+    const start = startPlain.toZonedDateTime(TZ_DEFAULT);
+    const end = endPlain.toZonedDateTime(TZ_DEFAULT);
 
-  onSave?.({
-    title: title.trim(),
-    allDay: false,
-    start,
-    end,
-  });
-};
+    onSave?.({
+      title: title.trim(),
+      allDay,
+      start,
+      end,
+      calendarId
+    });
+  };
 
 
   return (
@@ -84,6 +111,28 @@ export default function EventEditor({
             />
           </label>
 
+          <label className="eeField">
+            <div className="eeLabel">Calendar</div>
+            <select
+              className="eeInput"
+              value={calendarId}
+              onChange={e => setCalendarId(e.target.value)}
+            >
+              {calendars.map(c => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="eeField" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <input
+              type="checkbox"
+              checked={allDay}
+              onChange={e => setAllDay(e.target.checked)}
+            />
+            <span>All Day Event</span>
+          </label>
+
           <div className="eeGrid2">
             <label className="eeField">
               <div className="eeLabel">Start</div>
@@ -94,6 +143,16 @@ export default function EventEditor({
                 onChange={(e) => setStartVal(e.target.value)}
               />
             </label>
+
+
+            <div className="eeField">
+              <div className="eeLabel">Duration</div>
+              <div className="eeDurationCtrl">
+                <button type="button" onClick={() => handleDurationChange(-0.5)}>-</button>
+                <span>{duration}h</span>
+                <button type="button" onClick={() => handleDurationChange(0.5)}>+</button>
+              </div>
+            </div>
 
             <label className="eeField">
               <div className="eeLabel">End</div>

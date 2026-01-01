@@ -3,8 +3,12 @@
   height: 56px;
   display: flex;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 
-  background: var(--panel);
+  background: var(--tl-sticky-bg, var(--panel));
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
   color: var(--text);
 }

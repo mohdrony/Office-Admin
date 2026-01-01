@@ -1,5 +1,6 @@
 // src/pages/calendar/Calendar.jsx
 import "./calendar.scss";
+import "./calendarOverrides.css";
 
 import { useCallback, useMemo, useState } from "react";
 import useCalendarEvents from "./hooks/useCalendarEvents";
@@ -85,19 +86,43 @@ export default function Calendar() {
   const [draftEnd, setDraftEnd] = useState(null);
 
   const openCreateAt = useCallback((zdt) => {
-  // zdt is Temporal.ZonedDateTime (from Schedule-X)
-  setDraftStart(zdt);
-  setDraftEnd(zdt.add({ hours: 1 }));
-  setEditorOpen(true);
-}, []);
+    // Round to nearest half hour
+    // zdt is Temporal.ZonedDateTime or has similar API
+    const minute = zdt.minute;
+    let newMinute = 0;
 
-const openCreateAllDay = useCallback((plainDate) => {
-  // month grid clicks give Temporal.PlainDate
-  const start = plainDate.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "09:00" });
-  setDraftStart(start);
-  setDraftEnd(start.add({ hours: 1 }));
-  setEditorOpen(true);
-}, []);
+    if (minute >= 15 && minute < 45) {
+      newMinute = 30;
+    } else if (minute >= 45) {
+      newMinute = 0;
+      // Increment hour if rounding up, but simplest is usually floor/ceil.
+      // User asked: "if click between 7-8 default 7" -> Suggests floor logic or nearest slot logic?
+      // "click somewhere between 7-8 default start time would say 7 and end 8"
+      // Actually user said "half hour would be nice".
+      // Let's implement rounding to nearest 30 mins (00 or 30).
+
+      // Actually, if minute >= 45, we should go to next hour? 
+      // User example "between 7-8 default 7" suggests flooring?
+      // "if user clicks somewhere between 7 - 8 the default start time would say 7"
+      // BUT "i don't want exactly minute accurate but half hour would be nice"
+      // Let's stick to standard nearest half-hour snapping:
+      // 0-14 -> 00, 15-44 -> 30, 45-59 -> next hour 00
+      zdt = zdt.add({ hours: 1 });
+    }
+
+    const start = zdt.with({ minute: newMinute, second: 0, millisecond: 0 });
+    setDraftStart(start);
+    setDraftEnd(start.add({ hours: 1 }));
+    setEditorOpen(true);
+  }, []);
+
+  const openCreateAllDay = useCallback((plainDate) => {
+    // month grid clicks give Temporal.PlainDate
+    const start = plainDate.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "09:00" });
+    setDraftStart(start);
+    setDraftEnd(start.add({ hours: 1 }));
+    setEditorOpen(true);
+  }, []);
 
 
   const title = useMemo(
@@ -120,8 +145,8 @@ const openCreateAllDay = useCallback((plainDate) => {
       activeView === "day"
         ? { days: 1 }
         : activeView === "week"
-        ? { days: 7 }
-        : { months: 1 };
+          ? { days: 7 }
+          : { months: 1 };
 
     applyDate(cursorDate.subtract(step));
   }, [activeView, cursorDate, applyDate]);
@@ -131,8 +156,8 @@ const openCreateAllDay = useCallback((plainDate) => {
       activeView === "day"
         ? { days: 1 }
         : activeView === "week"
-        ? { days: 7 }
-        : { months: 1 };
+          ? { days: 7 }
+          : { months: 1 };
 
     applyDate(cursorDate.add(step));
   }, [activeView, cursorDate, applyDate]);
@@ -147,6 +172,29 @@ const openCreateAllDay = useCallback((plainDate) => {
     [controls, cursorDate]
   );
 
+  // Calendar Visibility State
+  const CALENDARS = useMemo(() => [
+    { id: 'office', label: 'Office', color: '#4ea1ff' },
+    { id: 'projects', label: 'Projects', color: '#5ee38b' },
+    { id: 'vacation', label: 'Vacation', color: '#ff4e4e' },
+  ], []);
+
+  const [visibleCalendars, setVisibleCalendars] = useState(() => new Set(['office', 'projects', 'vacation']));
+
+  const toggleCalendar = useCallback((id) => {
+    setVisibleCalendars(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  // Filter events based on visibility
+  const filteredEvents = useMemo(() => {
+    return scheduleXEvents.filter(e => visibleCalendars.has(e.calendarId));
+  }, [scheduleXEvents, visibleCalendars]);
+
   return (
     <div className="calendarPage">
       <div className="calendarSurface">
@@ -157,12 +205,20 @@ const openCreateAllDay = useCallback((plainDate) => {
           onNext={onNext}
           onToday={onToday}
           onSetView={onSetView}
+          calendars={CALENDARS}
+          visibleCalendars={visibleCalendars}
+          onToggleCalendar={toggleCalendar}
+          onOpenCreate={() => {
+            // Default to now rounded
+            const now = Temporal.Now.zonedDateTimeISO(TZ_DEFAULT);
+            openCreateAt(now);
+          }}
         />
 
         {isLoading ? <div className="calLoading">Loading…</div> : null}
 
         <CalendarCanvas
-          events={scheduleXEvents}
+          events={filteredEvents}
           onReady={({ controls, range }) => {
             if (controls) setControls(controls);
             if (range) setRange(range);
@@ -172,28 +228,29 @@ const openCreateAllDay = useCallback((plainDate) => {
         />
 
         <EventEditor
-  open={editorOpen}
-  mode="create"
-  initialStart={draftStart}
-  initialEnd={draftEnd}
-  onClose={() => setEditorOpen(false)}
-  onSave={({ title, start, end }) => {
-    // convert Temporal -> your DTO shape (ISO strings with offset)
-    const id = crypto.randomUUID();
+          open={editorOpen}
+          mode="create"
+          initialStart={draftStart}
+          initialEnd={draftEnd}
+          onClose={() => setEditorOpen(false)}
+          calendars={CALENDARS} // Pass calendars for selector
+          onSave={({ title, start, end, allDay, calendarId }) => {
+            // convert Temporal -> your DTO shape (ISO strings with offset)
+            const id = crypto.randomUUID();
 
-    createEvent({
-      id,
-      title,
-      allDay: false,
-      startAt: start.toString(), // includes [Europe/Berlin]
-      endAt: end.toString(),
-      timezone: TZ_DEFAULT,
-      calendarId: "office",
-    });
+            createEvent({
+              id,
+              title,
+              allDay,
+              startAt: start.toString(), // includes [Europe/Berlin]
+              endAt: end.toString(),
+              timezone: TZ_DEFAULT,
+              calendarId,
+            });
 
-    setEditorOpen(false);
-  }}
-/>
+            setEditorOpen(false);
+          }}
+        />
 
       </div>
     </div>
