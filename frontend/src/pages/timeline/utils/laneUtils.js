@@ -27,7 +27,10 @@ export function assignPhaseLanes(phases = []) {
     .map((ph) => ({
       ...ph,
       startT: toTime(ph.start),
-      endT: toTime(ph.end),
+      startT: toTime(ph.start),
+      // make end inclusive (covers the full end-day) so adjacent days (End May 31 vs Start Jun 1)
+      // count as overlapping/touching -> forces a new lane.
+      endT: toTime(ph.end) + (24 * 60 * 60 * 1000),
     }))
     .sort((a, b) => a.startT - b.startT);
 

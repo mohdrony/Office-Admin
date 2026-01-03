@@ -152,17 +152,17 @@
   overflow-x: auto;
   overflow-y: visible;
   /* Allow tooltips/labels to exceed row height boundaries */
-  padding-top: 10px;
-  /* Breathing room for top row labels */
+  /* padding-top: 10px; */
+  /* Removed padding for header alignment */
 }
 
 /* this wrapper ensures left-side rows match timeline row heights */
 .projectRowShell {
   border-bottom: 1px solid var(--border);
   display: flex;
-  align-items: stretch;
-  cursor: pointer;
-  box-sizing: border-box;
+  align-items: center;
+  /* Vertically center the inner TimelineRow */
+  width: 100%;
   position: relative;
   transition: background-color 0.1s;
 
@@ -279,7 +279,11 @@
   bottom: 0;
   width: 2px;
   background: var(--tl-today, var(--accent));
+  background: var(--tl-today, var(--accent));
   opacity: 0.9;
+  z-index: 99;
+  /* Force above everything */
+  pointer-events: none;
 }
 
 /* ================= Phase Bars ================= */
@@ -348,7 +352,8 @@
   pointer-events: auto;
 
   /* icon lane (from data) */
-  top: calc(4px + (var(--ilane, 0) * 24px));
+  /* icon lane (from data) + label offset for expanded mode */
+  top: calc(4px + var(--label-offset, 0px) + (var(--ilane, 0) * 24px));
 
   display: flex;
   flex-direction: column;
@@ -420,13 +425,14 @@
 /* Expanded: show labels always? Or keeps hover simple. The user asked for clean. Hover is cleaner. */
 /* If we MUST show them in expanded mode: */
 .tlTimeRow.isExpanded .milestoneLabel {
-  opacity: 0.8;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 30;
 }
 
 .tlTimeRow.isExpanded .milestone:hover .milestoneLabel {
-  opacity: 1;
   background: var(--hover);
-  z-index: 25;
+  z-index: 35;
 }
 
 /* Cleanup connectors - removing them for cleaner look */

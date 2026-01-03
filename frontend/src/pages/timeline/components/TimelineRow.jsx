@@ -1,8 +1,8 @@
 import "./timelineRow.scss";
 
-const TimelineRow = ({ project, rowHeight = 54 }) => {
+const TimelineRow = ({ project }) => {
   return (
-    <div className="tlProjectRow" style={{ height: `${rowHeight}px` }}>
+    <div className="timelineRow">
       <div className="meta">
         <div className="topLine">
           <span className="nr">{project.projectNumber}</span>

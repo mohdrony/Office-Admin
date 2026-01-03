@@ -213,20 +213,22 @@ const Timeline = () => {
       const msLaneStep = 24; // Increased to match new icon size/spacing
       const msBase = 30;
 
-      // Simple height based on max icon lane
-      const msBandH = msBase + (iconLaneMax * msLaneStep);
+      // usage in render...
+      const labelReserve = expanded ? 20 : 0;
+      const msBandH = msBase + labelReserve + (iconLaneMax * msLaneStep);
 
       // row height = ms band + phase lanes + bottom pad
-      const padBottom = 24; // Increased from 12 to 24 for breathing room
+      const padBottom = 24;
       const lanes = Math.max(1, phaseLaneCount);
       const calculatedH = msBandH + lanes * barH + (lanes - 1) * gap + padBottom;
-      const rowH = Math.max(110, calculatedH); // Increased min height from 100
+      const rowH = Math.max(110, calculatedH);
 
       return {
         project: p,
         expanded,
         rowH,
         msBandH,
+        labelReserve, // Pass this to be used in render
         barH,
         gap,
         phaseItems,
@@ -443,6 +445,7 @@ const Timeline = () => {
                               style={{
                                 left: `${m.x}px`,
                                 "--ilane": iconLane,
+                                "--label-offset": `${r.labelReserve}px`,
                               }}
                               title={m.label}
                             >
