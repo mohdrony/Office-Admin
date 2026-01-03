@@ -18,18 +18,27 @@ import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded"; // meeting
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded"; // submission
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded"; // approval
 import FlagRoundedIcon from "@mui/icons-material/FlagRounded"; // deadline
+import HandymanRoundedIcon from "@mui/icons-material/HandymanRounded"; // construction
+import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded"; // delivery
 
 // ---------- Milestone icon mapping ----------
 function milestoneIconByType(type) {
-  switch (type) {
+  const lower = (type || "").toLowerCase();
+  switch (lower) {
     case "meeting":
+    case "review":
       return <GroupsRoundedIcon fontSize="inherit" />;
     case "submission":
       return <UploadFileRoundedIcon fontSize="inherit" />;
     case "approval":
       return <TaskAltRoundedIcon fontSize="inherit" />;
+    case "construction":
+    case "baubeginn":
+      return <HandymanRoundedIcon fontSize="inherit" />;
     case "deadline":
-      return <FlagRoundedIcon fontSize="inherit" />;
+    case "delivery":
+    case "abgabe":
+      return <LocalShippingRoundedIcon fontSize="inherit" />;
     default:
       return <FlagRoundedIcon fontSize="inherit" />;
   }
@@ -37,6 +46,13 @@ function milestoneIconByType(type) {
 
 // ---------- Date parsing helpers ----------
 const toDate = (s) => new Date(`${s}T00:00:00`);
+const formatDate = (d) =>
+  d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
 
 function clamp(num, a, b) {
   return Math.max(a, Math.min(b, num));
@@ -404,6 +420,10 @@ const Timeline = () => {
                           const end = toDate(ph.end);
                           const { x, w } = scale.spanToXW(start, end);
 
+                          const durationDays = Math.round(
+                            (end - start) / (1000 * 60 * 60 * 24)
+                          );
+
                           return (
                             <div
                               key={ph.id}
@@ -415,19 +435,20 @@ const Timeline = () => {
                                 background: ph.color || "var(--accent)",
                                 "--lane": ph.lane,
                               }}
-                              title={ph.name}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                console.log("Show detail for phase:", ph);
-                                // For now, we expand the row as "detail" since we don't have a separate side-panel component yet
-                                // The user asked for "detail, not a modal". 
-                                // Expanding the row shows more info (labels), so let's ensure it expands AND maybe triggering a toast/panel?
-                                // Let's keep it simple: Expand row + future hook.
                                 if (!r.expanded) toggleExpanded(p.id);
                               }}
                             >
-                              {/* Always show text if wide enough, or only expanded? User wants details. */}
                               <span className="phaseText">{ph.name}</span>
+
+                              <div className="phaseTooltip">
+                                <div className="ttTitle">{ph.name}</div>
+                                <div className="ttDate">
+                                  {formatDate(start)} – {formatDate(end)}
+                                </div>
+                                <div className="ttDur">{durationDays} days</div>
+                              </div>
                             </div>
                           );
                         })}

@@ -292,7 +292,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 2;
+  z-index: 6;
+  /* 2 -> 6 to sit ABOVE milestonesLayer (5) so tooltips aren't covered */
 }
 
 .phaseBar {
@@ -306,6 +307,9 @@
   min-width: 6px;
   border: 1px solid rgba(0, 0, 0, 0.05);
 
+  pointer-events: auto;
+  /* Re-enable pointer events for hover */
+
   /* bars start after milestone band */
   top: calc(var(--ms-band-h, 26px) + (var(--lane, 0) * (26px + var(--gap, 6px))));
   transition: all 0.2s ease;
@@ -313,7 +317,68 @@
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    z-index: 10;
+    z-index: 100;
+    /* Ensure tooltip renders on top */
+  }
+
+  /* Tooltip logic */
+  .phaseTooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -8px);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 200;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    min-width: 120px;
+
+    /* Little triangle arrow */
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1a1a1a;
+    }
+
+    .ttTitle {
+      font-weight: 700;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .ttDate {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .ttDur {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 4px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  &:hover .phaseTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -12px);
   }
 }
 
