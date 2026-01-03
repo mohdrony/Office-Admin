@@ -2,15 +2,21 @@ import "./timelineRow.scss";
 
 // TimelineRow.jsx
 import "./timelineRow.scss";
+import { usePerson } from "../../../context/PersonContext";
+import ProjectTag from "../../ProjectTag/ProjectTag";
+
 // Removed unused icon imports
 
 
 
-const TimelineRow = ({ project }) => { // removed unused props
+
+const TimelineRow = ({ project }) => {
+  const { openPersonDetail } = usePerson();
+
   return (
     <div className="timelineRow">
       <div className="projectDetailArea">
-        <h4>{project.projectNumber}</h4>
+        <h4><ProjectTag projectId={project.id} label={project.projectNumber} /></h4>
         <h5>{project.shortName}</h5>
         <p>{project.name}</p>
 
@@ -21,6 +27,11 @@ const TimelineRow = ({ project }) => { // removed unused props
               src={person.avatar}
               alt={person.name}
               className="avatar"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent expanding row
+                openPersonDetail(person.id);
+              }}
+              style={{ cursor: 'pointer' }}
             />
           ))}
         </div>

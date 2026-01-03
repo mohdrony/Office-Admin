@@ -4,6 +4,8 @@ import { Chip, CircularProgress, Box, Typography } from '@mui/material';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
+import { usePerson } from "../../../context/PersonContext";
+import ProjectTag from "../../../components/ProjectTag/ProjectTag";
 import "./ProjectOverview.scss";
 
 function CircularProgressWithLabel(props) {
@@ -31,6 +33,8 @@ function CircularProgressWithLabel(props) {
 }
 
 export default function ProjectOverview({ project }) {
+    const { openPersonDetail } = usePerson();
+
     if (!project) return <div className="overviewEmpty">Select a project</div>;
 
     const stats = useMemo(() => {
@@ -58,7 +62,7 @@ export default function ProjectOverview({ project }) {
                     <div className="poTitleBlock">
                         <h1 className="poTitle">{project.name}</h1>
                         <div className="poMetaRow">
-                            <span className="poBadge">{project.projectNumber}</span>
+                            <ProjectTag projectId={project.id} label={project.projectNumber} />
                             <span className="poSite">{project.site}</span>
                         </div>
                     </div>
@@ -101,9 +105,11 @@ export default function ProjectOverview({ project }) {
                                             border: '2px solid var(--panel)',
                                             marginLeft: '-8px',
                                             position: 'relative',
+                                            cursor: 'pointer', // Show clickable
                                             firstOfType: { marginLeft: 0 }
                                         }}
                                         title={user.name}
+                                        onClick={() => openPersonDetail(user.id)}
                                     />
                                 ))}
                                 {/* Hacky correction for the first item margin since we are inline styles */}

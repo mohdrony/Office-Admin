@@ -6,6 +6,8 @@ import { projectsDummy } from "../../data/projectsDummy.js";
 import ProjectOverview from "./components/ProjectOverview";
 import TimeEntryList from "./components/TimeEntryList";
 import TimeEntryModal from "./components/TimeEntryModal";
+import ProjectTag from "../../components/ProjectTag/ProjectTag";
+
 
 const Projects = () => {
   // Master state: selected project
@@ -51,7 +53,7 @@ const Projects = () => {
                 onClick={() => setSelectedId(p.id)}
               >
                 <div className="pMeta">
-                  <span className="pNumber">{p.projectNumber}</span>
+                  <ProjectTag projectId={p.id} label={p.projectNumber} />
                   <span>{p.shortName}</span>
                 </div>
                 <h3>{p.name}</h3>

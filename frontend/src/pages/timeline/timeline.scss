@@ -432,9 +432,10 @@
   display: grid;
   place-items: center;
 
-  color: var(--accent);
+  /* Use dynamic color passed from JS, fallback to accent */
+  color: var(--ms-color, var(--accent));
   background: var(--panel);
-  border: 2px solid var(--accent);
+  border: 2px solid var(--ms-color, var(--accent));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 

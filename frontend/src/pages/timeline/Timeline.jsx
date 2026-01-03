@@ -44,6 +44,25 @@ function milestoneIconByType(type) {
   }
 }
 
+// ---------- Milestone Color Mapping ----------
+const MILESTONE_COLORS = {
+  meeting: "#ae3ec9",     // Grape
+  review: "#ae3ec9",
+  submission: "#f76707",  // Orange
+  approval: "#0ca678",    // Green
+  construction: "#f59f00",// Yellow/Amber
+  baubeginn: "#f59f00",
+  deadline: "#e03131",    // Red
+  delivery: "#e03131",
+  abgabe: "#e03131",
+  default: "#1c7ed6"      // Blue (accent)
+};
+
+function getMilestoneColor(type) {
+  const lower = (type || "").toLowerCase();
+  return MILESTONE_COLORS[lower] || MILESTONE_COLORS.default;
+}
+
 // ---------- Date parsing helpers ----------
 const toDate = (s) => new Date(`${s}T00:00:00`);
 const formatDate = (d) =>
@@ -467,6 +486,7 @@ const Timeline = () => {
                                 left: `${m.x}px`,
                                 "--ilane": iconLane,
                                 "--label-offset": `${r.labelReserve}px`,
+                                "--ms-color": getMilestoneColor(m.type),
                               }}
                               title={m.label}
                             >

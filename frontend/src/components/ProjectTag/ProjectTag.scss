@@ -1,0 +1,41 @@
+/* src/components/ProjectTag/ProjectTag.scss */
+
+.stdProjectTag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Standard Look: Rounded Outline */
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    /* Slightly squarish tag look, or use 20px for pill */
+    padding: 2px 8px;
+
+    font-family: monospace, sans-serif;
+    /* Monospace often looks good for codes */
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+
+    white-space: nowrap;
+    transition: all 0.2s ease;
+
+    /* Ensure interactivity in layered components */
+    position: relative;
+    z-index: 2;
+
+    &.clickable {
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.05);
+            /* Needs --accent-rgb to be defined, or just use hover var */
+            background: var(--hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    }
+}

@@ -7,27 +7,42 @@ import Home from "./pages/home/Home.jsx";
 import Timeline from "./pages/timeline/Timeline.jsx";
 import Projects from "./pages/projects/Projects.jsx";
 import Calendar from "./pages/calendar/Calendar.jsx";
+import Team from "./pages/team/Team.jsx";
 import Login from "./pages/login/Login.jsx";
+import { PersonProvider } from "./context/PersonContext.jsx";
+import PersonDetailModal from "./components/PersonDetailModal/PersonDetailModal.jsx";
+import { ProjectProvider } from "./context/ProjectContext.jsx";
+import ProjectDetailModal from "./components/ProjectDetailModal/ProjectDetailModal.jsx";
+
+
 
 export default function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          {/* Auth routes (no sidebar/navbar) */}
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-          </Route>
+      <ProjectProvider>
+        <PersonProvider>
+          <ProjectDetailModal />
+          <PersonDetailModal />
+          <BrowserRouter>
+            <Routes>
+              {/* Auth routes (no sidebar/navbar) */}
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+              </Route>
 
-          {/* App routes (with sidebar/navbar) */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="timeline" element={<Timeline />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="calendar" element={<Calendar />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+              {/* App routes (with sidebar/navbar) */}
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="timeline" element={<Timeline />} />
+                <Route path="projects" element={<Projects />} />
+                <Route path="projects" element={<Projects />} />
+                <Route path="calendar" element={<Calendar />} />
+                <Route path="team" element={<Team />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </PersonProvider>
+      </ProjectProvider>
     </div>
   );
 }
