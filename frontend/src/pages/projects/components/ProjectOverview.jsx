@@ -84,6 +84,36 @@ export default function ProjectOverview({ project }) {
                         <div className="detail link">{project.client?.email}</div>
                     </div>
 
+                    {/* Team Section */}
+                    {project.persons && project.persons.length > 0 && (
+                        <div className="poTeamRow">
+                            <h4 className="poSubTitle" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>Team</h4>
+                            <div style={{ display: 'flex', gap: '-8px' }}>
+                                {project.persons.map(user => (
+                                    <div
+                                        key={user.id}
+                                        style={{
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '50%',
+                                            backgroundSize: 'cover',
+                                            backgroundImage: `url(${user.avatar})`,
+                                            border: '2px solid var(--panel)',
+                                            marginLeft: '-8px',
+                                            position: 'relative',
+                                            firstOfType: { marginLeft: 0 }
+                                        }}
+                                        title={user.name}
+                                    />
+                                ))}
+                                {/* Hacky correction for the first item margin since we are inline styles */}
+                                <style>{`
+                                    .poTeamRow > div > div:first-of-type { margin-left: 0 !important; }
+                                `}</style>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="poStatBlock">
                         <div className="poStatItem">
                             <span className="label">Budget</span>

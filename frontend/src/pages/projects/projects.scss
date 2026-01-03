@@ -44,11 +44,14 @@
       overflow: hidden;
 
       h2.cardTitle {
-        padding: 1.5rem 1rem 0.75rem;
+        height: 60px; // Fixed height for alignment
+        display: flex;
+        align-items: center;
+        padding: 0 1.25rem;
         margin: 0;
         font-size: 1.1rem;
         color: var(--text);
-        border-bottom: none;
+        border-bottom: 1px solid var(--border); // Add bottom border to match right side
       }
 
       .projectSelector {
@@ -130,9 +133,11 @@
         // border-left: 1px solid var(--border);
 
         .cardHeaderAction {
+          height: 60px; // Fixed height to match left side
           display: flex;
+          align-items: center; // Center vertically
           justify-content: flex-end;
-          padding: 1rem 1.5rem 0.5rem;
+          padding: 0 1.5rem; // Horizontal padding
           background: var(--panel);
           flex-shrink: 0;
           border-bottom: 1px solid var(--border);

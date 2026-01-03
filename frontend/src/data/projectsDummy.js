@@ -1,125 +1,224 @@
-// src/data/projectsDummy.js
-
 export const projectsDummy = [
   {
     id: "p1",
-    projectNumber: "P-2024-001",
-    shortName: "Downtown Plaza",
-    name: "Downtown City Plaza Renovation",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2670&auto=format&fit=crop",
+    projectNumber: "L-2024-035",
+    shortName: "Rheinufer",
+    name: "Neugestaltung Rheinuferpromenade",
+    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2670&auto=format&fit=crop",
     client: {
-      name: "City Council",
-      contact: "Elena Fisher",
-      email: "e.fisher@cityhall.gov",
-      phone: "+1 (555) 010-9988"
+      name: "Stadt Köln - Grünflächenamt",
+      contact: "Dr. Thomas Müller",
+      email: "t.mueller@stadt-koeln.de",
+      phone: "+49 221 123-4567"
     },
-    budget: "$2.4M",
-    site: "1200 Main St, Metro City",
-    startDate: "2024-01-15",
-    endDate: "2024-11-30",
+    budget: "€4.2M",
+    site: "Rheinuferstr. 1, 50668 Köln",
+    startDate: "2024-02-01",
+    endDate: "2025-08-31",
     persons: [
-      { id: "u1", name: "Alice Johnson", avatar: "https://i.pravatar.cc/150?u=a" },
-      { id: "u2", name: "Bob Smith", avatar: "https://i.pravatar.cc/150?u=b" },
-      { id: "u3", name: "Charlie Davis", avatar: "https://i.pravatar.cc/150?u=c" },
+      { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" }, // PL
+      { id: "u2", name: "Lukas Schmidt", avatar: "https://i.pravatar.cc/150?u=b" }, // Bauleiter
+      { id: "u3", name: "Sarah Klein", avatar: "https://i.pravatar.cc/150?u=c" },   // Werkstudentin
     ],
     phases: [
       {
-        id: "ph1",
-        name: "Design & Planning",
-        start: "2024-01-15",
-        end: "2024-03-01",
-        color: "#4ea1ff",
-        timeBudget: 120, // hours
+        id: "lph3",
+        name: "LPH 3: Entwurfsplanung",
+        start: "2024-02-01",
+        end: "2024-04-15",
+        color: "#4ea1ff", // Blue
+        timeBudget: 180,
         hourEntries: [
-          { person: { id: "u1", name: "Alice Johnson", avatar: "https://i.pravatar.cc/150?u=a" }, description: "Initial site survey", hour: 4.5 },
-          { person: { id: "u1", name: "Alice Johnson", avatar: "https://i.pravatar.cc/150?u=a" }, description: "Drafting blueprints", hour: 2.0 },
-          { person: { id: "u2", name: "Bob Smith", avatar: "https://i.pravatar.cc/150?u=b" }, description: "Client meeting", hour: 1.5 },
+          {
+            id: "he1",
+            date: "2024-03-10",
+            person: { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" },
+            description: "Detaillierung Pflanzplanung Staudenbeete",
+            hour: 4.5
+          },
+          {
+            id: "he2",
+            date: "2024-03-12",
+            person: { id: "u3", name: "Sarah Klein", avatar: "https://i.pravatar.cc/150?u=c" },
+            description: "Massermittlung für Kostenberechnung",
+            hour: 6.0
+          },
         ],
       },
       {
-        id: "ph2",
-        name: "Excavation",
-        start: "2024-03-02",
-        end: "2024-05-15",
-        color: "#ffca4e", // yellow
-        timeBudget: 300,
+        id: "lph5",
+        name: "LPH 5: Ausführungsplanung",
+        start: "2024-04-16",
+        end: "2024-07-30",
+        color: "#ffca4e", // Yellow
+        timeBudget: 320,
         hourEntries: [
-          { person: { id: "u3", name: "Charlie Davis", avatar: "https://i.pravatar.cc/150?u=c" }, description: "Site clearing", hour: 8.0 },
-          { person: { id: "u3", name: "Charlie Davis", avatar: "https://i.pravatar.cc/150?u=c" }, description: "Heavy machinery operation", hour: 6.5 },
+          {
+            id: "he3",
+            date: "2024-05-02",
+            person: { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" },
+            description: "Werkplan Natursteinbelag Promenade",
+            hour: 5.5
+          },
+          {
+            id: "he4",
+            date: "2024-05-15",
+            person: { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" },
+            description: "Abstimmung mit Lichtplaner",
+            hour: 2.0
+          },
         ],
       },
       {
-        id: "ph3",
-        name: "Construction",
-        start: "2024-05-16",
-        end: "2024-10-01",
-        color: "#ff6b6b", // red
-        timeBudget: 800,
-        hourEntries: [],
+        id: "lph8",
+        name: "LPH 8: Objektüberwachung",
+        start: "2024-09-01",
+        end: "2025-06-30",
+        color: "#ff6b6b", // Red
+        timeBudget: 600,
+        hourEntries: [
+          {
+            id: "he5",
+            date: "2024-09-05",
+            person: { id: "u2", name: "Lukas Schmidt", avatar: "https://i.pravatar.cc/150?u=b" },
+            description: "Baustelleneinrichtung prüfen & Protokoll",
+            hour: 3.0
+          },
+        ],
       },
     ],
     milestones: [
-      { id: "m1", date: "2024-02-28", label: "Blueprints Approved", lane: 0, type: "Approval" },
-      { id: "m2", date: "2024-05-15", label: "Foundation Complete", lane: 1, type: "Construction" },
+      { id: "m1", date: "2024-04-15", label: "Abgabe Entwurf", lane: 0, type: "Approval" },
+      { id: "m2", date: "2024-08-15", label: "Baubeginn", lane: 1, type: "Construction" },
     ]
   },
   {
     id: "p2",
-    projectNumber: "P-2024-005",
-    shortName: "Green Valley",
-    name: "Green Valley Eco-Park",
-    image: "https://images.unsplash.com/photo-1542601906990-24ccd08d7455?q=80&w=2528&auto=format&fit=crop",
+    projectNumber: "WB-2024-08",
+    shortName: "BUGA 2029",
+    name: "Einladungswettbewerb BUGA 2029",
+    image: "https://images.unsplash.com/photo-1580974511812-4b71978d501b?q=80&w=2670&auto=format&fit=crop",
     client: {
-      name: "Green Earth NGO",
-      contact: "Marcus Thorne",
-      email: "m.thorne@ge.org",
-      phone: "+1 (555) 234-5678"
+      name: "BUGA GmbH",
+      contact: "Wettbewerbsbüro",
+      email: "wb@buga2029.de",
+      phone: "+49 30 987-6543"
     },
-    budget: "$850k",
-    site: "4500 Valley Rd, Eco District",
-    startDate: "2024-04-01",
-    endDate: "2024-09-15",
+    budget: "Wettbewerb",
+    site: "Mittelrheintal, Loreley",
+    startDate: "2024-05-01",
+    endDate: "2024-07-15",
     persons: [
-      { id: "u2", name: "Bob Smith", avatar: "https://i.pravatar.cc/150?u=b" },
-      { id: "u4", name: "Diana Prince", avatar: "https://i.pravatar.cc/150?u=d" },
+      { id: "u4", name: "Marc Wagner", avatar: "https://i.pravatar.cc/150?u=d" }, // Design Lead
+      { id: "u5", name: "Hanna Fischer", avatar: "https://i.pravatar.cc/150?u=5" }, // Visualization
     ],
     phases: [
       {
-        id: "ph2-1",
-        name: "Concept",
-        start: "2024-04-01",
-        end: "2024-04-30",
-        color: "#66d9e8",
-        timeBudget: 80,
+        id: "wb1",
+        name: "Konzeptphase",
+        start: "2024-05-01",
+        end: "2024-05-31",
+        color: "#a5d8ff", // Light Blue
+        timeBudget: 100,
         hourEntries: [
-          { person: { id: "u4", name: "Diana Prince", avatar: "https://i.pravatar.cc/150?u=d" }, description: "Landscape sketches", hour: 5 },
+          {
+            id: "he6",
+            date: "2024-05-05",
+            person: { id: "u4", name: "Marc Wagner", avatar: "https://i.pravatar.cc/150?u=d" },
+            description: "Brainstorming & Skizzen Gesamtidee",
+            hour: 8.0
+          },
+        ]
+      },
+      {
+        id: "wb2",
+        name: "Ausarbeitung",
+        start: "2024-06-01",
+        end: "2024-07-10",
+        color: "#748ffc", // Indigo
+        timeBudget: 250,
+        hourEntries: [
+          {
+            id: "he7",
+            date: "2024-06-20",
+            person: { id: "u5", name: "Hanna Fischer", avatar: "https://i.pravatar.cc/150?u=5" },
+            description: "Rendering Perspektiven Uferbereich",
+            hour: 7.5
+          },
+          {
+            id: "he8",
+            date: "2024-07-05",
+            person: { id: "u4", name: "Marc Wagner", avatar: "https://i.pravatar.cc/150?u=d" },
+            description: "Endlayout Präsentationspläne",
+            hour: 10.0
+          },
         ]
       }
     ],
-    milestones: []
+    milestones: [
+      { id: "m3", date: "2024-05-20", label: "Schulterblick", lane: 0, type: "Review" },
+      { id: "m4", date: "2024-07-15", label: "Abgabe Plansatz", lane: 0, type: "Submission" },
+    ]
   },
   {
     id: "p3",
-    projectNumber: "P-2024-008",
-    shortName: "Tech Hub",
-    name: "Tech Innovation Hub HQ",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2301&auto=format&fit=crop",
+    projectNumber: "S-2024-12",
+    shortName: "Isarauen",
+    name: "Gutachten Renaturierung Isarauen",
+    image: "https://images.unsplash.com/photo-1504543285918-62a26c483252?q=80&w=2670&auto=format&fit=crop",
     client: {
-      name: "Innovate Corp",
-      contact: "Sarah Connor",
-      email: "sarah@techhub.io",
-      phone: "+1 (555) 999-0000"
+      name: "Wasserwirtschaftsamt München",
+      contact: "Hr. Bergmann",
+      email: "poststelle@wwa-m.bayern.de",
+      phone: "+49 89 214-3333"
     },
-    budget: "$5.2M",
-    site: "88 Innovation Dr, Silicon Bay",
-    startDate: "2024-02-01",
-    endDate: "2024-12-20",
+    budget: "€45k",
+    site: "Isar-km 12-15, München Süd",
+    startDate: "2024-03-01",
+    endDate: "2024-06-30",
     persons: [
-      { id: "u1", name: "Alice Johnson", avatar: "https://i.pravatar.cc/150?u=a" },
-      { id: "u3", name: "Charlie Davis", avatar: "https://i.pravatar.cc/150?u=c" },
-      { id: "u4", name: "Diana Prince", avatar: "https://i.pravatar.cc/150?u=d" },
+      { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" },
+      { id: "u6", name: "Dr. Peter Lang", avatar: "https://i.pravatar.cc/150?u=6" }, // Biologist/External
     ],
-    phases: [],
-    milestones: []
+    phases: [
+      {
+        id: "sl1",
+        name: "Bestandsaufnahme",
+        start: "2024-03-01",
+        end: "2024-04-15",
+        color: "#63e6be", // Teal
+        timeBudget: 60,
+        hourEntries: [
+          {
+            id: "he9",
+            date: "2024-03-15",
+            person: { id: "u6", name: "Dr. Peter Lang", avatar: "https://i.pravatar.cc/150?u=6" },
+            description: "Kartierung Flora & Fauna Abschnitt A",
+            hour: 5.0
+          },
+        ]
+      },
+      {
+        id: "sl2",
+        name: "Gutachten / Maßnahmen",
+        start: "2024-04-16",
+        end: "2024-06-15",
+        color: "#20c997", // Green
+        timeBudget: 90,
+        hourEntries: [
+          {
+            id: "he10",
+            date: "2024-05-10",
+            person: { id: "u1", name: "Julia Weber", avatar: "https://i.pravatar.cc/150?u=a" },
+            description: "Entwicklung Pflegekonzept",
+            hour: 4.0
+          },
+        ]
+      }
+    ],
+    milestones: [
+      { id: "m5", date: "2024-04-15", label: "Kartierung Abschluss", lane: 1, type: "Milestone" },
+      { id: "m6", date: "2024-06-30", label: "Endbericht", lane: 0, type: "Delivery" },
+    ]
   },
 ];

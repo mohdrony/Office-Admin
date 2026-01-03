@@ -2,9 +2,9 @@
 
 .projectOverview {
     color: var(--text, #242424);
-    // height: 100%; // Remove full height constraint
     display: flex;
     flex-direction: column;
+    padding-top: 1.5rem; // Added top margin for spacing
 
     .poHeader {
         display: flex;
@@ -15,11 +15,11 @@
         .poIdentity {
             display: flex;
             align-items: flex-start;
-            gap: 1.25rem;
+            gap: 1.5rem; // Increased gap
 
             .poBanner {
-                width: 64px;
-                height: 64px;
+                width: 100px; // Bigger image
+                height: 100px; // Bigger image
                 border-radius: 12px;
                 // Use a fallback color that matches the theme if image fails
                 background-color: var(--hover, #eee);
