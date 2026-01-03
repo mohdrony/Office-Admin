@@ -1,0 +1,71 @@
+.projectPerformanceView {
+    .ppGrid {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+
+        .ppCard {
+            flex: 1;
+            background: #f9f9f9; // Very light grey wash
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+
+            .ppValue {
+                font-size: 1.5rem;
+                font-weight: 600; // refined weight
+                color: #242424;
+                margin-bottom: 0.25rem;
+                letter-spacing: -0.02em;
+            }
+
+            .ppLabel {
+                font-size: 0.7rem;
+                color: #616161;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+        }
+    }
+
+    .ppMainProgress {
+        margin-bottom: 2rem;
+
+        .ppProgressHeader {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #424242;
+        }
+    }
+
+    .ppPhaseList {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+
+        .ppPhaseItem {
+            .ppPhaseHeader {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+                font-size: 0.8rem;
+
+                .ppPhaseName {
+                    font-weight: 500;
+                    color: #424242;
+                }
+
+                .ppPhaseVal {
+                    color: #757575;
+                    font-family: inherit;
+                    font-size: 0.75rem;
+                }
+            }
+        }
+    }
+}

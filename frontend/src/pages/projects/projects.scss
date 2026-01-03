@@ -1,17 +1,201 @@
+/* src/pages/projects/projects.scss */
+
+// --- Modern Fluent / Clean Theme Variables ---
+// These SASS variables are being replaced by CSS custom properties (var(--...))
+// $bg-app: #f0f2f5; // Neutral application background
+// $bg-surface: #ffffff; // Clean white surface
+// $bg-sidebar: #f7f7f8; // Slightly off-white for list panel
+// $border-color: #e5e7eb; // Subtle border
+// $primary-brand: #0f6cbd; // Microsoft-like Blue
+// $primary-light: #e1f0fa; // Active state background
+// $text-primary: #242424; // Soft black
+// $text-secondary: #616161; // Accessible grey
+// $radius-card: 12px;
+// $radius-sm: 8px;
+// $shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+// $shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+
 .projectsPage {
-    /* the page sits inside Layout's <main className="page"> */
-    width: 100%;
-    min-width: 0;
-  }
-  
-  .projectsContent {
-    width: 100%;
-    min-width: 0;
-  }
-  
-  .projectEconomyRows {
+  // Use global variables
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0; // Removing padding as requested
+  background-color: var(--bg);
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: inherit;
+
+  .projectsSplitView {
     display: flex;
-    flex-direction: column;
-    gap: 12px; /* optional but nice */
+    flex: 1;
+    gap: 0; // Remove gap, let borders define separation
+    height: 100%;
+    overflow: hidden;
+
+    // --- Left Panel: Project List ---
+    .projectLeftPanel {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      background: var(--panel); // Use panel bg
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+
+      h2.cardTitle {
+        padding: 1.5rem 1rem 0.75rem;
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text);
+        border-bottom: none;
+      }
+
+      .projectSelector {
+        display: flex;
+        flex-direction: column;
+        gap: 0; // Seamless list
+        overflow-y: auto;
+        padding: 0; // Flush list
+
+        .projectCard {
+          padding: 1rem 1.25rem;
+          background: transparent;
+          border-radius: 0; // Rectangular list items
+          border-bottom: 1px solid transparent;
+          cursor: pointer;
+          transition: background-color 0.1s ease;
+          position: relative;
+
+          &:hover {
+            background-color: var(--hover);
+          }
+
+          &.active {
+            background-color: var(--hover); // or keep transparent but use indicator
+            color: var(--text);
+            // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); // Pop out slightly
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0; // Full height
+              width: 4px;
+              background-color: var(--accent); // Use accent color
+            }
+
+            h3 {
+              color: var(--text);
+              font-weight: 700;
+            }
+          }
+
+          h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.4;
+          }
+
+          .pMeta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    // --- Right Panel: Rich Toggle Content ---
+    .projectRightPanel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg); // or var(--panel) depending on preference, usually panel for content
+      overflow: hidden;
+
+      .mainCard {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--panel); // Main content area is panel color
+        // We don't need border if we are flush usually, but let's keep it safe
+        // border-left: 1px solid var(--border);
+
+        .cardHeaderAction {
+          display: flex;
+          justify-content: flex-end;
+          padding: 1rem 1.5rem 0.5rem;
+          background: var(--panel);
+          flex-shrink: 0;
+          border-bottom: 1px solid var(--border);
+
+          // Segmented Control (copied from CalendarToolbar)
+          .segmented {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.06); // or a variable if available, but sticky to index.scss usually wants var(--hover) or similar
+
+            button {
+              height: 32px;
+              padding: 0 12px;
+              border: 0;
+              background: transparent;
+              color: var(--muted);
+              cursor: pointer;
+              font-size: 13px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+
+              &:hover {
+                background: var(--hover);
+                color: var(--text);
+              }
+
+              &.active {
+                background: var(--hover);
+                color: var(--text);
+                font-weight: 600;
+              }
+            }
+          }
+        }
+
+        .cardContentScroll {
+          flex: 1;
+          overflow-y: auto;
+          padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+      }
+    }
   }
-  
+}
+
+// Sub-component typography shared
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.subTitle {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
