@@ -122,7 +122,10 @@
   background: var(--panel);
   position: sticky;
   left: 0;
-  z-index: 7;
+  z-index: 20;
+  /* High z-index to sit above timeline content */
+  box-shadow: 1px 0 0 0 var(--border);
+  /* Reinforce boundary */
 
   .projectColHeader {
     height: 44px;
@@ -134,7 +137,8 @@
     background: var(--panel);
     position: sticky;
     top: 0;
-    z-index: 8;
+    z-index: 21;
+    /* Above column body */
   }
 
   .projectRows {
@@ -143,18 +147,40 @@
   }
 }
 
+.timelineCol {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  /* Allow tooltips/labels to exceed row height boundaries */
+  padding-top: 10px;
+  /* Breathing room for top row labels */
+}
+
 /* this wrapper ensures left-side rows match timeline row heights */
 .projectRowShell {
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: stretch;
   cursor: pointer;
-}
+  box-sizing: border-box;
+  position: relative;
+  transition: background-color 0.1s;
 
-.timelineCol {
-  min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  &.isExpanded {
+    background-color: var(--hover);
+
+    /* Selection Indicator */
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      z-index: 10;
+    }
+  }
 }
 
 .tlScroll {
