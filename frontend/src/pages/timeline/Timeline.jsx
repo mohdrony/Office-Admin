@@ -204,27 +204,23 @@ const Timeline = () => {
       const barH = expanded ? 14 : 12;
       const gap = expanded ? 6 : 5;
 
-      // milestone band: must be high enough for:
-      // - icon lanes (your data: m.lane)
-      // - label stack lanes (collision-based)
+      // milestone band: distinct height for icons. Labels are now overlay (hover), so we don't reserve space for them.
       const iconLaneMax =
         msVisible.length > 0
           ? Math.max(...msVisible.map((m) => Number(m.lane || 0)))
           : 0;
 
-      const msLaneStep = 18;
-      const msBase = 26;
+      const msLaneStep = 24; // Increased to match new icon size/spacing
+      const msBase = 30;
 
-      const msBandH = expanded
-        ? msBase +
-        (Math.max(iconLaneMax + 1, msLabelLaneCount) * msLaneStep + 10)
-        : msBase + (iconLaneMax > 0 ? (iconLaneMax + 1) * 10 : 0);
+      // Simple height based on max icon lane
+      const msBandH = msBase + (iconLaneMax * msLaneStep);
 
       // row height = ms band + phase lanes + bottom pad
-      const padBottom = 12;
+      const padBottom = 24; // Increased from 12 to 24 for breathing room
       const lanes = Math.max(1, phaseLaneCount);
       const calculatedH = msBandH + lanes * barH + (lanes - 1) * gap + padBottom;
-      const rowH = Math.max(100, calculatedH);
+      const rowH = Math.max(110, calculatedH); // Increased min height from 100
 
       return {
         project: p,
@@ -418,10 +414,18 @@ const Timeline = () => {
                                 "--lane": ph.lane,
                               }}
                               title={ph.name}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                console.log("Show detail for phase:", ph);
+                                // For now, we expand the row as "detail" since we don't have a separate side-panel component yet
+                                // The user asked for "detail, not a modal". 
+                                // Expanding the row shows more info (labels), so let's ensure it expands AND maybe triggering a toast/panel?
+                                // Let's keep it simple: Expand row + future hook.
+                                if (!r.expanded) toggleExpanded(p.id);
+                              }}
                             >
-                              {r.expanded ? (
-                                <span className="phaseText">{ph.name}</span>
-                              ) : null}
+                              {/* Always show text if wide enough, or only expanded? User wants details. */}
+                              <span className="phaseText">{ph.name}</span>
                             </div>
                           );
                         })}

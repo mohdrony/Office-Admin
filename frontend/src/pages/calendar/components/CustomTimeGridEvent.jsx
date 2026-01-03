@@ -30,10 +30,17 @@ export default function CustomTimeGridEvent({ calendarEvent }) {
     let timeStr = "";
     try {
         if (calendarEvent.start && calendarEvent.end) {
-            const startPart = calendarEvent.start.includes(' ') ? calendarEvent.start.split(' ')[1] : calendarEvent.start.split('T')[1];
-            const endPart = calendarEvent.end.includes(' ') ? calendarEvent.end.split(' ')[1] : calendarEvent.end.split('T')[1];
+            // Ensure strings
+            const startStr = typeof calendarEvent.start === 'string' ? calendarEvent.start : calendarEvent.start.toString();
+            const endStr = typeof calendarEvent.end === 'string' ? calendarEvent.end : calendarEvent.end.toString();
+
+            // Extract time part if available
+            const startPart = startStr.includes(' ') ? startStr.split(' ')[1] : (startStr.includes('T') ? startStr.split('T')[1] : null);
+            const endPart = endStr.includes(' ') ? endStr.split(' ')[1] : (endStr.includes('T') ? endStr.split('T')[1] : null);
+
             if (startPart && endPart) {
-                timeStr = `${startPart} - ${endPart}`;
+                // Simplified HH:MM
+                timeStr = `${startPart.substring(0, 5)} - ${endPart.substring(0, 5)}`;
             }
         }
     } catch (e) {

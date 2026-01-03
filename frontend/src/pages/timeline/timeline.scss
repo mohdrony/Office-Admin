@@ -208,16 +208,33 @@
   flex-direction: column;
 }
 
-/* each row is its own clipping container */
+/* each row is its own clipping container - NO, we need visible overflow for tooltips/labels */
 .tlTimeRow {
   position: relative;
   display: flex;
   border-bottom: 1px solid var(--border);
 
-  /* keep overlays inside THIS row */
-  overflow: hidden;
+  /* Allow overlapping labels */
+  overflow: visible;
+  /* z-index needed so lower rows don't cover upper row tooltips? 
+     Actually, if we rely on hover z-index boost, standard stacking order (later elements on top) 
+     means lower rows cover upper rows. We might need a z-index management script or just high z-index on hover.
+  */
+  z-index: 1;
 
   cursor: pointer;
+  transition: background-color 0.1s;
+
+  &:hover {
+    background-color: var(--hover);
+    z-index: 10;
+    /* Bring hovered row to front */
+  }
+
+  &.isExpanded {
+    background-color: var(--hover);
+    z-index: 5;
+  }
 }
 
 .gridCol {
@@ -240,6 +257,7 @@
 }
 
 /* ================= Phase Bars ================= */
+/* ================= Phase Bars ================= */
 .phaseBarsLayer {
   position: absolute;
   inset: 0;
@@ -249,29 +267,41 @@
 
 .phaseBar {
   position: absolute;
-  height: var(--bar-h, 14px);
-  border-radius: 999px;
-  opacity: 0.95;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  height: 20px;
+  /* Increased from 14px */
+  border-radius: 6px;
+  /* Soft rect instead of pill */
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   min-width: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 
   /* bars start after milestone band */
-  top: calc(var(--ms-band-h, 26px) + (var(--lane, 0) * (var(--bar-h, 14px) + var(--gap, 6px))));
+  top: calc(var(--ms-band-h, 26px) + (var(--lane, 0) * (26px + var(--gap, 6px))));
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
 }
 
 .phaseText {
   position: absolute;
-  left: 10px;
+  left: 8px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 12px;
-  font-weight: 750;
-  color: rgba(0, 0, 0, 0.86);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  /* Assume dark bars usually, or needs variable text color */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
-  max-width: calc(100% - 16px);
+  max-width: calc(100% - 12px);
   overflow: hidden;
   text-overflow: ellipsis;
+  pointer-events: none;
 }
 
 /* ================= Milestones ================= */
@@ -292,91 +322,91 @@
   pointer-events: auto;
 
   /* icon lane (from data) */
-  top: calc(6px + (var(--ilane, 0) * 18px));
+  top: calc(4px + (var(--ilane, 0) * 24px));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .milestoneIcon {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
 
-  color: var(--text);
-  border: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.08);
+  color: var(--accent);
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 
   svg {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
-:root[data-theme="light"] .milestoneIcon {
-  background: rgba(0, 0, 0, 0.05);
+.milestone:hover .milestoneIcon {
+  transform: scale(1.1);
 }
+
 
 /* Label should be ABOVE the icon and stack upward */
 .milestoneLabel {
   position: absolute;
-
-  left: 12px;
+  bottom: 24px;
+  /* Directly above icon */
+  left: 50%;
+  transform: translateX(-50%);
 
   /* stack UPWARDS: lane 0 is closest to icon */
-  bottom: calc(22px + (var(--mlane, 0) * 18px));
+  /* We might need to rethink stacking if we want simple visual */
+  /* bottom: calc(22px + (var(--mlane, 0) * 18px)); */
+  /* Simplifying: just show immediately above. If overlapping, user can zoom. Stacking often looks messy. */
 
-  max-width: 260px;
+  max-width: 200px;
   padding: 4px 8px;
-  border-radius: 999px;
+  border-radius: 4px;
 
-  background: rgba(25, 25, 25, 0.82);
-  color: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
-  font-size: 12px;
-  font-weight: 750;
+  font-size: 11px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 20;
 }
 
-/* Expanded: show labels */
+.milestone:hover .milestoneLabel {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Expanded: show labels always? Or keeps hover simple. The user asked for clean. Hover is cleaner. */
+/* If we MUST show them in expanded mode: */
 .tlTimeRow.isExpanded .milestoneLabel {
-  display: inline-flex;
-  align-items: center;
+  opacity: 0.8;
 }
 
-/* Connector line: from icon to label (left side of label), visible in both themes */
-.milestoneLabel::before {
-  /* horizontal stub into label */
-  content: "";
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.55);
+.tlTimeRow.isExpanded .milestone:hover .milestoneLabel {
+  opacity: 1;
+  background: var(--hover);
+  z-index: 25;
 }
 
+/* Cleanup connectors - removing them for cleaner look */
+.milestoneLabel::before,
 .milestoneLabel::after {
-  /* vertical drop to icon area */
-  content: "";
-  position: absolute;
-  left: -12px;
-  bottom: -18px;
-  width: 1px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.40);
-}
-
-:root[data-theme="light"] .milestoneLabel::before {
-  background: rgba(255, 255, 255, 0.55);
-}
-
-:root[data-theme="light"] .milestoneLabel::after {
-  background: rgba(255, 255, 255, 0.40);
+  display: none;
 }
 
 /* ================= Mobile ================= */
