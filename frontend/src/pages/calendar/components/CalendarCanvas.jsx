@@ -1,5 +1,3 @@
-// src/pages/calendar/components/CalendarCanvas.jsx
-
 import "@schedule-x/theme-default/dist/index.css";
 
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
@@ -11,18 +9,22 @@ import {
 
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import { createCalendarControlsPlugin } from "@schedule-x/calendar-controls";
+import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 
 import { useEffect, useMemo } from "react";
+import CustomTimeGridEvent from "./CustomTimeGridEvent";
 
 export default function CalendarCanvas({
   events,
   onReady,
   onClickDateTime: handleClickDateTime,
   onClickDate: handleClickDate,
-  onEventClick,
+  onEventUpdate,
+  onEventClick, // We can use this directly now
 }) {
   const eventsService = useMemo(() => createEventsServicePlugin(), []);
   const controls = useMemo(() => createCalendarControlsPlugin(), []);
+  const dragAndDrop = useMemo(() => createDragAndDropPlugin(), []);
 
   const calendarApp = useCalendarApp({
     calendars: {
@@ -59,7 +61,7 @@ export default function CalendarCanvas({
     },
 
     views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
-    events: [],
+    events: [], // Initial events will be set via effect
     plugins: [eventsService, controls],
     callbacks: {
       onRangeUpdate(range) {
@@ -74,6 +76,19 @@ export default function CalendarCanvas({
       onEventClick(calendarEvent) {
         onEventClick?.(calendarEvent);
       },
+      onEventUpdate(updatedEvent) {
+        // Schedule-X handles the UI update internally for the drag.
+        // We just need to persist it up.
+        // updatedEvent contains the new start/end times.
+        if (onEventUpdate) {
+          onEventUpdate(updatedEvent.id, {
+            start: updatedEvent.start,
+            end: updatedEvent.end,
+            calendarId: updatedEvent.calendarId,
+            title: updatedEvent.title
+          });
+        }
+      },
     },
   });
 
@@ -83,38 +98,23 @@ export default function CalendarCanvas({
   }, [calendarApp, controls, onReady]);
 
   // Sync events prop with Schedule-X
-  // Sync events prop with Schedule-X
   useEffect(() => {
     if (!events) return;
-
-    try {
-      // Check if the plugin has a bulk set method (some versions do)
-      if (eventsService && typeof eventsService.set === 'function') {
-        eventsService.set(events);
-      } else if (eventsService) {
-        // Fallback: clear and add
-        const current = eventsService.getAll?.();
-        if (Array.isArray(current)) {
-          current.forEach(e => eventsService.remove?.(e.id));
-        }
-
-        events.forEach(e => {
-          // Ensure mandatory fields
-          if (e.id && e.start && e.end) {
-            eventsService.add?.(e);
-          } else {
-            console.warn("Skipping invalid event", e);
-          }
-        });
-      }
-    } catch (err) {
-      console.error("Failed to update calendar events:", err);
+    if (eventsService) {
+      // Schedule-X requires Temporal objects for start/end
+      eventsService.set(events);
     }
   }, [events, eventsService]);
 
   return (
     <div className="calCanvas">
-      <ScheduleXCalendar calendarApp={calendarApp} />
+      <ScheduleXCalendar
+        calendarApp={calendarApp}
+        customComponents={{
+          timeGridEvent: CustomTimeGridEvent,
+          // Removed eventModal custom component as we use native click handler
+        }}
+      />
     </div>
   );
 }

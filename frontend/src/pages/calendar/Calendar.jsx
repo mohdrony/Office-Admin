@@ -13,8 +13,13 @@ import { TZ_DEFAULT } from "./types";
 function toJSDate(anyTemporalOrString) {
   if (!anyTemporalOrString) return null;
 
-  // If Schedule-X gives us YYYY-MM-DD
+  // If Schedule-X gives us YYYY-MM-DD or YYYY-MM-DD HH:mm
   if (typeof anyTemporalOrString === "string") {
+    // If it looks like it has time (length > 10), treat as ISO-ish
+    if (anyTemporalOrString.length > 10) {
+      return new Date(anyTemporalOrString.replace(" ", "T"));
+    }
+    // Otherwise assume Date-only
     return new Date(anyTemporalOrString + "T00:00:00");
   }
 
@@ -73,7 +78,7 @@ function todayPlainDate() {
 
 
 export default function Calendar() {
-  const { isLoading, scheduleXEvents, createEvent, updateEvent } = useCalendarEvents();
+  const { isLoading, scheduleXEvents, createEvent, updateEvent, deleteEvent } = useCalendarEvents();
 
   const [controls, setControls] = useState(null);
 
@@ -92,7 +97,28 @@ export default function Calendar() {
 
   const [selectedEvent, setSelectedEvent] = useState(null); // For detail modal
 
-  const openCreateAt = useCallback((zdt) => {
+  const openCreateAt = useCallback((zdtOrString) => {
+    // Defensive check
+    if (!zdtOrString) return;
+
+    // Schedule-X might return a string (YYYY-MM-DD HH:mm)
+    let zdt;
+    try {
+      if (typeof zdtOrString === 'string') {
+        zdt = Temporal.PlainDateTime.from(zdtOrString.replace(' ', 'T')).toZonedDateTime(TZ_DEFAULT);
+      } else {
+        zdt = zdtOrString;
+      }
+    } catch (e) {
+      console.error("Invalid date passed to openCreateAt", zdtOrString, e);
+      return;
+    }
+
+    if (!zdt || !zdt.minute) {
+      console.warn("openCreateAt: zdt is not a Temporal object", zdt);
+      return;
+    }
+
     // Round to nearest half hour
     // zdt is Temporal.ZonedDateTime or has similar API
     const minute = zdt.minute;
@@ -114,7 +140,23 @@ export default function Calendar() {
     setEditMode("create");
   }, []);
 
-  const openCreateAllDay = useCallback((plainDate) => {
+  const openCreateAllDay = useCallback((plainDateOrString) => {
+    if (!plainDateOrString) return;
+
+    let plainDate;
+    try {
+      if (typeof plainDateOrString === 'string') {
+        plainDate = Temporal.PlainDate.from(plainDateOrString);
+      } else {
+        plainDate = plainDateOrString;
+      }
+    } catch (e) {
+      console.error("Invalid date passed to openCreateAllDay", plainDateOrString, e);
+      return;
+    }
+
+    if (!plainDate) return;
+
     // month grid clicks give Temporal.PlainDate
     const start = plainDate.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "09:00" });
     setDraftStart(start);
@@ -142,8 +184,10 @@ export default function Calendar() {
     // Let's create ZDT from the strings.
 
     try {
-      const start = Temporal.PlainDateTime.from(selectedEvent.start).toZonedDateTime(TZ_DEFAULT);
-      const end = Temporal.PlainDateTime.from(selectedEvent.end).toZonedDateTime(TZ_DEFAULT);
+      const safeStart = selectedEvent.start.replace(' ', 'T');
+      const safeEnd = selectedEvent.end.replace(' ', 'T');
+      const start = Temporal.PlainDateTime.from(safeStart).toZonedDateTime(TZ_DEFAULT);
+      const end = Temporal.PlainDateTime.from(safeEnd).toZonedDateTime(TZ_DEFAULT);
 
       setDraftStart(start);
       setDraftEnd(end);
@@ -167,6 +211,12 @@ export default function Calendar() {
     }
   }, [selectedEvent]);
 
+  const handleDelete = useCallback((id) => {
+    deleteEvent(id);
+    setEditorOpen(false);
+    setSelectedEvent(null);
+  }, [deleteEvent]);
+
 
   const title = useMemo(
     () => formatTitleFromRange(range, activeView),
@@ -176,7 +226,8 @@ export default function Calendar() {
   const applyDate = useCallback(
     (d) => {
       setCursorDate(d);
-      controls?.setDate?.(d); // official API
+      // specific fix: Schedule-X expects a string (YYYY-MM-DD)
+      controls?.setDate?.(d.toString());
     },
     [controls]
   );
@@ -210,7 +261,7 @@ export default function Calendar() {
       setActiveView(viewName);
       controls?.setView?.(viewName); // official API
       // keep date stable across view changes
-      controls?.setDate?.(cursorDate);
+      controls?.setDate?.(cursorDate.toString());
     },
     [controls, cursorDate]
   );
@@ -276,6 +327,7 @@ export default function Calendar() {
           event={selectedEvent}
           onClose={() => setSelectedEvent(null)}
           onEdit={handleEditFromDetail}
+          onDelete={() => handleDelete(selectedEvent.id)}
           calendars={CALENDARS}
         />
 
@@ -306,6 +358,11 @@ export default function Calendar() {
             }
 
             setEditorOpen(false);
+          }}
+          onDelete={() => {
+            if (editMode === "edit" && draftId) {
+              handleDelete(draftId);
+            }
           }}
         />
 

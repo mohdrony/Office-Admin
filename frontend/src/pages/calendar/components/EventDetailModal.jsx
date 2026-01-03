@@ -3,20 +3,35 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 function formatDate(date) {
     if (!date) return "";
     // Accept ISO string, Date, or Temporal objects
     let jsDate;
-    if (typeof date === "string" || date instanceof Date) {
-        jsDate = new Date(date);
-    } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDate || date instanceof Temporal.PlainDateTime)) {
-        // Convert Temporal to JavaScript Date via Instant
-        jsDate = new Date(date.toInstant().epochMilliseconds);
-    } else {
-        // Fallback
-        jsDate = new Date(date);
+    try {
+        if (typeof date === "string") {
+            // Fix for Mac/Safari: replace space with T if needed
+            const safeDate = date.replace(" ", "T");
+            jsDate = new Date(safeDate);
+        } else if (date instanceof Date) {
+            jsDate = new Date(date);
+        } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDate || date instanceof Temporal.PlainDateTime)) {
+            if (date.toInstant) {
+                jsDate = new Date(date.toInstant().epochMilliseconds);
+            } else {
+                // PlainDate or PlainDateTime: use component construction for local time (avoids UTC shifts)
+                jsDate = new Date(date.year, date.month - 1, date.day);
+            }
+        } else {
+            jsDate = new Date(date);
+        }
+    } catch (e) {
+        return "";
     }
+
+    if (isNaN(jsDate.getTime())) return String(date);
+
     return new Intl.DateTimeFormat("en-US", {
         weekday: "long",
         year: "numeric",
@@ -28,13 +43,28 @@ function formatDate(date) {
 function formatTime(date) {
     if (!date) return "";
     let jsDate;
-    if (typeof date === "string" || date instanceof Date) {
-        jsDate = new Date(date);
-    } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDateTime)) {
-        jsDate = new Date(date.toInstant().epochMilliseconds);
-    } else {
-        jsDate = new Date(date);
+    try {
+        if (typeof date === "string") {
+            const safeDate = date.replace(" ", "T");
+            jsDate = new Date(safeDate);
+        } else if (date instanceof Date) {
+            jsDate = new Date(date);
+        } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDateTime)) {
+            if (date.toInstant) {
+                jsDate = new Date(date.toInstant().epochMilliseconds);
+            } else {
+                // PlainDateTime: construct local date/time
+                jsDate = new Date(date.year, date.month - 1, date.day, date.hour, date.minute);
+            }
+        } else {
+            jsDate = new Date(date);
+        }
+    } catch (e) {
+        return "";
     }
+
+    if (isNaN(jsDate.getTime())) return "";
+
     return new Intl.DateTimeFormat("en-US", {
         hour: "2-digit",
         minute: "2-digit",
@@ -46,6 +76,7 @@ export default function EventDetailModal({
     isOpen,
     onClose,
     onEdit,
+    onDelete,
     calendars = [],
 }) {
     if (!isOpen || !event) return null;
@@ -64,6 +95,17 @@ export default function EventDetailModal({
                     <div className="edActions">
                         <button className="edIconBtn" onClick={onEdit} title="Edit Event">
                             <EditRoundedIcon fontSize="small" />
+                        </button>
+                        <button
+                            className="edIconBtn"
+                            onClick={() => {
+                                if (window.confirm("Are you sure you want to delete this event?")) {
+                                    onDelete?.();
+                                }
+                            }}
+                            title="Delete Event"
+                        >
+                            <DeleteRoundedIcon fontSize="small" />
                         </button>
                         <button className="edIconBtn" onClick={onClose} title="Close">
                             <CloseRoundedIcon fontSize="small" />

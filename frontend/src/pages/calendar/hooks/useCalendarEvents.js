@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { projectsDummy } from "../../../data/projectsDummy";
 import { mapAllProjectsToEvents } from "../utils/projectMapper";
-import { listEvents, createEvent as createStoreEvent } from "../store/eventStoreDummy";
+import { listEvents, createEvent as createStoreEvent, deleteEvent as deleteStoreEvent } from "../store/eventStoreDummy";
 import { TZ_DEFAULT } from "../types";
 
 /**
@@ -47,8 +47,8 @@ export default function useCalendarEvents() {
       calendarId: draft.calendarId || 'office',
       description: 'New Event',
       // Use ZonedDateTime to preserve time info for grid placement
-      start: Temporal.Instant.from(draft.startAt).toZonedDateTimeISO(TZ_DEFAULT),
-      end: Temporal.Instant.from(draft.endAt).toZonedDateTimeISO(TZ_DEFAULT),
+      start: Temporal.ZonedDateTime.from(draft.startAt),
+      end: Temporal.ZonedDateTime.from(draft.endAt),
     };
 
     const savedEvent = createStoreEvent(simpleEvent);
@@ -64,8 +64,8 @@ export default function useCalendarEvents() {
     const patch = {};
     if (draft.title !== undefined) patch.title = draft.title;
     if (draft.calendarId !== undefined) patch.calendarId = draft.calendarId;
-    if (draft.startAt) patch.start = Temporal.Instant.from(draft.startAt).toZonedDateTimeISO(TZ_DEFAULT);
-    if (draft.endAt) patch.end = Temporal.Instant.from(draft.endAt).toZonedDateTimeISO(TZ_DEFAULT);
+    if (draft.startAt) patch.start = Temporal.ZonedDateTime.from(draft.startAt);
+    if (draft.endAt) patch.end = Temporal.ZonedDateTime.from(draft.endAt);
 
     setEvents(prev => prev.map(e => {
       if (e.id === id) {
@@ -80,5 +80,9 @@ export default function useCalendarEvents() {
     scheduleXEvents, // mapped list for Schedule-X
     createEvent,
     updateEvent,
+    deleteEvent: (id) => {
+      deleteStoreEvent(id);
+      setEvents(prev => prev.filter(e => e.id !== id));
+    },
   };
 }

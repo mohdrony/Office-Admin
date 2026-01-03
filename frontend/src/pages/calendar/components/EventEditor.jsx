@@ -2,6 +2,7 @@
 import "./eventEditor.scss";
 import { useEffect, useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { TZ_DEFAULT } from "../types";
 
 function pad(n) {
@@ -27,6 +28,7 @@ export default function EventEditor({
   initialCalendarId = "office",
   onClose,
   onSave,
+  onDelete,
   calendars = []
 }) {
   const defaultTitle = mode === "create" ? "New event" : "Edit event";
@@ -169,6 +171,20 @@ export default function EventEditor({
         </div>
 
         <div className="eeFooter">
+          {mode === "edit" && (
+            <button
+              className="eeBtn ghost danger"
+              type="button"
+              onClick={() => {
+                if (window.confirm("Delete this event?")) onDelete?.();
+              }}
+              style={{ marginRight: "auto" }}
+            >
+              <DeleteOutlineIcon fontSize="small" style={{ marginRight: 4 }} />
+              Delete
+            </button>
+          )}
+
           <button className="eeBtn ghost" type="button" onClick={onClose}>
             Cancel
           </button>
