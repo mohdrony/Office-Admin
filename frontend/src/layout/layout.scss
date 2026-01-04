@@ -1,57 +1,72 @@
 :root {
-    --sidebar-expanded: 240px;
-    --sidebar-collapsed: 72px;
-    --navbar-height: 56px;
-  }
-  
+  --sidebar-expanded: 240px;
+  --sidebar-collapsed: 72px;
+  --navbar-height: 56px;
+}
+
+.appLayout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-expanded) 1fr;
+  transition: grid-template-columns 180ms ease;
+}
+
+/* Desktop collapsed (icons only) */
+.appLayout.sidebarCollapsed {
+  grid-template-columns: var(--sidebar-collapsed) 1fr;
+}
+
+.contentArea {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* Ensure content area takes available space */
+  flex: 1;
+  height: 100vh;
+  /* Or strictly control height from appLayout */
+  overflow: hidden;
+  /* Handle scrolling inside the page or here */
+}
+
+.page {
+  /* Page must fill the contentArea to allow 100% height children */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px;
+  height: 100%;
+  /* Pass height down */
+  position: relative;
+  overflow: hidden;
+  /* Let child scroll */
+}
+
+/* Scrim overlay for mobile drawer */
+.scrim {
+  display: none;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
   .appLayout {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: var(--sidebar-expanded) 1fr;
-    transition: grid-template-columns 180ms ease;
+    grid-template-columns: 1fr;
+    /* sidebar becomes overlay */
   }
-  
-  /* Desktop collapsed (icons only) */
-  .appLayout.sidebarCollapsed {
-    grid-template-columns: var(--sidebar-collapsed) 1fr;
-  }
-  
-  .contentArea {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .page {
-    min-width: 0;
-    padding: 16px;
-  }
-  
-  /* Scrim overlay for mobile drawer */
+
   .scrim {
-    display: none;
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    z-index: 30;
   }
-  
-  /* Mobile behavior */
-  @media (max-width: 768px) {
-    .appLayout {
-      grid-template-columns: 1fr; /* sidebar becomes overlay */
-    }
-  
-    .scrim {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 180ms ease;
-      z-index: 30;
-    }
-  
-    .appLayout.mobileSidebarOpen .scrim {
-      opacity: 1;
-      pointer-events: auto;
-    }
+
+  .appLayout.mobileSidebarOpen .scrim {
+    opacity: 1;
+    pointer-events: auto;
   }
-  
+}

@@ -10,6 +10,8 @@ import Calendar from "./pages/calendar/Calendar.jsx";
 import Team from "./pages/team/Team.jsx";
 import Login from "./pages/login/Login.jsx";
 import MyPage from "./pages/my-page/MyPage.jsx";
+import Settings from "./pages/settings/Settings.jsx";
+import PhotoLibrary from "./pages/photos/PhotoLibrary.jsx";
 import { PersonProvider } from "./context/PersonContext.jsx";
 import PersonDetailModal from "./components/PersonDetailModal/PersonDetailModal.jsx";
 import { ProjectProvider } from "./context/ProjectContext.jsx";
@@ -36,10 +38,11 @@ export default function App() {
                 <Route index element={<Home />} />
                 <Route path="timeline" element={<Timeline />} />
                 <Route path="projects" element={<Projects />} />
-                <Route path="projects" element={<Projects />} />
                 <Route path="calendar" element={<Calendar />} />
                 <Route path="team" element={<Team />} />
                 <Route path="my-page" element={<MyPage />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="photos" element={<PhotoLibrary />} />
               </Route>
             </Routes>
           </BrowserRouter>

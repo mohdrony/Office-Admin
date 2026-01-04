@@ -6,55 +6,57 @@
     border-radius: 16px;
     overflow: hidden;
     color: var(--text);
-}
-
-.closeBtn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid transparent;
-    background: rgba(0, 0, 0, 0.05);
     color: var(--text);
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    z-index: 10;
-    transition: all 0.2s;
 
-    &:hover {
-        background: rgba(0, 0, 0, 0.1);
-        transform: rotate(90deg);
-    }
-}
 
-.actionBtn {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--accent);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    z-index: 10;
-    transition: all 0.2s;
+    .closeBtn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid transparent;
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        z-index: 10;
+        transition: all 0.2s;
 
-    &:hover {
-        background: var(--hover);
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(90deg);
+        }
     }
 
-    svg {
-        font-size: 16px;
+    .actionBtn {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--accent);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 10;
+        transition: all 0.2s;
+
+        &:hover {
+            background: var(--hover);
+        }
+
+        svg {
+            font-size: 16px;
+        }
     }
 }
 

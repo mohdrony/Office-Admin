@@ -1,0 +1,187 @@
+@use "../../index.scss" as *;
+
+.photoPage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.photoSurface {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.photoToolbar {
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(var(--panel-rgb), 0.6);
+    backdrop-filter: blur(12px);
+
+    .leftActions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 650;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px 10px;
+            min-width: 240px;
+            transition: border-color 0.2s;
+
+            &:focus-within {
+                border-color: var(--accent);
+            }
+
+            .searchIcon {
+                font-size: 1.1rem;
+                color: var(--muted);
+            }
+
+            input {
+                border: none;
+                background: transparent;
+                outline: none;
+                color: var(--text);
+                width: 100%;
+                font-size: 0.85rem;
+
+                &::placeholder {
+                    color: var(--muted);
+                }
+            }
+        }
+    }
+
+    .rightActions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .actionBtn {
+        height: 32px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+        font-weight: 500;
+        white-space: nowrap;
+
+        &:hover {
+            background: var(--hover);
+        }
+
+        &.active {
+            background: var(--hover);
+            color: var(--text);
+            border-color: var(--accent);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.photoGrid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+
+    .photoCard {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s, border-color 0.2s;
+        position: relative;
+
+        &:hover,
+        &.selected {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+
+            .overlay {
+                opacity: 1;
+            }
+        }
+
+        &.selected {
+            border-width: 2px;
+            background: var(--surface-2);
+        }
+
+        .imageWrap {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .info {
+            padding: 12px;
+
+            .title {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: var(--text);
+                margin-bottom: 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .meta {
+                font-size: 0.8rem;
+                color: var(--muted);
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}

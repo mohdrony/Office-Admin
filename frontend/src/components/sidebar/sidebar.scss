@@ -167,86 +167,50 @@
   align-items: center;
 }
 
-.footerChip {
-  flex: 1;
+/* Metadata Footer */
+.sidebarMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.metaRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  padding: 10px 12px;
-  border-radius: 12px;
-
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  color: inherit;
-
-  cursor: pointer;
-
-  &:hover {
-    background: var(--hover);
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .dotTheme {
-    background: var(--accent);
-  }
-
-  .chipLabel {
-    font-weight: 650;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  gap: 6px;
+  margin-bottom: 2px;
 }
 
-/* Accent dots */
-.accentPicker {
-  display: flex;
-  gap: 10px;
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2ed573;
+  /* Success green */
+  box-shadow: 0 0 8px rgba(46, 213, 115, 0.4);
 }
 
-.accentDot {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-
-  &.active {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
+.metaLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text);
+  letter-spacing: 0.5px;
 }
 
-/* Map dot colors (independent of current accent) */
-.accentDot.yellow {
-  background: #ffea71;
+.metaInfo {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--muted);
+  opacity: 0.8;
 }
 
-.accentDot.blue {
-  background: #4ea1ff;
-}
-
-.accentDot.green {
-  background: #5ee38b;
-}
-
-.accentDot.purple {
-  background: #b28cff;
-}
-
-.accentDot.orange {
-  background: #ffb86b;
+.metaCopyright {
+  font-size: 10px;
+  color: var(--muted);
+  opacity: 0.6;
+  margin-top: 4px;
 }
 
 /* ===== Collapsed mode (controlled by Layout class on .appLayout) ===== */

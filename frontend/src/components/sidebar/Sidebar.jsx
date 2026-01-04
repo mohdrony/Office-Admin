@@ -3,17 +3,18 @@ import "./sidebar.scss";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../../theme/ThemeProvider.jsx";
 
-import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
-import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import GroupIcon from "@mui/icons-material/Group";
-import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import SpaceDashboardRoundedIcon from "@mui/icons-material/SpaceDashboardRounded";
+import ViewTimelineRoundedIcon from "@mui/icons-material/ViewTimelineRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import TopicRoundedIcon from "@mui/icons-material/TopicRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import PermIdentityRoundedIcon from "@mui/icons-material/PermIdentityRounded";
+import PhotoLibraryRoundedIcon from '@mui/icons-material/PhotoLibraryRounded';
 
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import CloseIcon from "@mui/icons-material/Close";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const navClass = ({ isActive }) => (isActive ? "navLink active" : "navLink");
 
@@ -64,7 +65,7 @@ export default function Sidebar({
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={isCollapsed ? "Expand" : "Collapse"}
           >
-            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {isCollapsed ? <ChevronRightRoundedIcon /> : <ChevronLeftRoundedIcon />}
           </button>
 
           {/* Mobile close button */}
@@ -75,7 +76,7 @@ export default function Sidebar({
             aria-label="Close sidebar"
             title="Close"
           >
-            <CloseIcon />
+            <CloseRoundedIcon />
           </button>
         </div>
       </div>
@@ -86,7 +87,7 @@ export default function Sidebar({
 
           <NavLink to="/" end className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <DashboardCustomizeIcon className="icon" />
+              <SpaceDashboardRoundedIcon className="icon" />
             </span>
             <span className="label">Dashboard</span>
           </NavLink>
@@ -97,28 +98,28 @@ export default function Sidebar({
 
           <NavLink to="/timeline" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <ViewTimelineIcon className="icon" />
+              <ViewTimelineRoundedIcon className="icon" />
             </span>
             <span className="label">Timeline</span>
           </NavLink>
 
           <NavLink to="/calendar" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <CalendarMonthIcon className="icon" />
+              <CalendarMonthRoundedIcon className="icon" />
             </span>
             <span className="label">Calendar</span>
           </NavLink>
 
           <NavLink to="/projects" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <AccountTreeIcon className="icon" />
+              <TopicRoundedIcon className="icon" />
             </span>
             <span className="label">Projects</span>
           </NavLink>
 
           <NavLink to="/my-page" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <AccessTimeIcon className="icon" />
+              <PermIdentityRoundedIcon className="icon" />
             </span>
             <span className="label">My Page</span>
           </NavLink>
@@ -129,52 +130,38 @@ export default function Sidebar({
 
           <NavLink to="/team" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <GroupIcon className="icon" />
+              <PeopleAltRoundedIcon className="icon" />
             </span>
             <span className="label">Team</span>
           </NavLink>
 
           <NavLink to="/settings" className={navClass} onClick={handleNavClick}>
             <span className="iconWrap">
-              <DisplaySettingsIcon className="icon" />
+              <SettingsRoundedIcon className="icon" />
             </span>
             <span className="label">Settings</span>
+          </NavLink>
+
+          <NavLink to="/photos" className={navClass} onClick={handleNavClick}>
+            <span className="iconWrap">
+              <PhotoLibraryRoundedIcon className="icon" />
+            </span>
+            <span className="label">Photos</span>
           </NavLink>
         </div>
       </nav>
 
       <div className="sidebarFooter">
-        {/* Theme mode */}
-        <button
-          type="button"
-          className="footerChip"
-          onClick={cycleTheme}
-          title={`Theme: ${themeMode} (click to cycle)`}
-        >
-          <span className="dot dotTheme" />
-          <span className="chipLabel">
-            Theme:{" "}
-            {themeMode === "system"
-              ? "System"
-              : themeMode === "dark"
-                ? "Dark"
-                : "Light"}
-          </span>
-        </button>
-
-        {/* Accent picker */}
-        <div className="accentPicker" title="Accent color">
-          {ACCENTS.map((a) => (
-            <button
-              key={a.key}
-              type="button"
-              className={`accentDot ${a.key} ${accent === a.key ? "active" : ""
-                }`}
-              onClick={() => setAccent(a.key)}
-              aria-label={`Accent: ${a.label}`}
-              title={a.label}
-            />
-          ))}
+        {/* Metadata Footer */}
+        <div className="sidebarMeta">
+          <div className="metaRow">
+            <div className="statusDot"></div>
+            <span className="metaLabel">Online</span>
+          </div>
+          <div className="metaInfo">
+            <span>Main</span> • <span>#2026.01</span>
+          </div>
+          <div className="metaCopyright">© 2026 Robiul Alam</div>
         </div>
       </div>
     </aside>
