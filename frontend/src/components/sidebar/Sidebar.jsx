@@ -9,6 +9,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import GroupIcon from "@mui/icons-material/Group";
 import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -42,8 +43,8 @@ export default function Sidebar({
       themeMode === "system"
         ? "dark"
         : themeMode === "dark"
-        ? "light"
-        : "system";
+          ? "light"
+          : "system";
     setThemeMode(next);
   };
 
@@ -114,6 +115,13 @@ export default function Sidebar({
             </span>
             <span className="label">Projects</span>
           </NavLink>
+
+          <NavLink to="/my-page" className={navClass} onClick={handleNavClick}>
+            <span className="iconWrap">
+              <AccessTimeIcon className="icon" />
+            </span>
+            <span className="label">My Page</span>
+          </NavLink>
         </div>
 
         <div className="navSection">
@@ -149,8 +157,8 @@ export default function Sidebar({
             {themeMode === "system"
               ? "System"
               : themeMode === "dark"
-              ? "Dark"
-              : "Light"}
+                ? "Dark"
+                : "Light"}
           </span>
         </button>
 
@@ -160,9 +168,8 @@ export default function Sidebar({
             <button
               key={a.key}
               type="button"
-              className={`accentDot ${a.key} ${
-                accent === a.key ? "active" : ""
-              }`}
+              className={`accentDot ${a.key} ${accent === a.key ? "active" : ""
+                }`}
               onClick={() => setAccent(a.key)}
               aria-label={`Accent: ${a.label}`}
               title={a.label}

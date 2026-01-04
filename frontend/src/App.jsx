@@ -9,6 +9,7 @@ import Projects from "./pages/projects/Projects.jsx";
 import Calendar from "./pages/calendar/Calendar.jsx";
 import Team from "./pages/team/Team.jsx";
 import Login from "./pages/login/Login.jsx";
+import MyPage from "./pages/my-page/MyPage.jsx";
 import { PersonProvider } from "./context/PersonContext.jsx";
 import PersonDetailModal from "./components/PersonDetailModal/PersonDetailModal.jsx";
 import { ProjectProvider } from "./context/ProjectContext.jsx";
@@ -38,6 +39,7 @@ export default function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="calendar" element={<Calendar />} />
                 <Route path="team" element={<Team />} />
+                <Route path="my-page" element={<MyPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

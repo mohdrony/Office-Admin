@@ -26,6 +26,7 @@ export default function EventEditor({
   initialEnd, // Temporal.ZonedDateTime
   initialTitle = "",
   initialCalendarId = "office",
+  initialAllDay = false, // [NEW] Support for default allDay state
   onClose,
   onSave,
   onDelete,
@@ -46,10 +47,10 @@ export default function EventEditor({
     setTitle(mode === "create" ? defaultTitle : initialTitle);
     setStartVal(initialStart ? toLocalInputValue(initialStart) : "");
     setEndVal(initialEnd ? toLocalInputValue(initialEnd) : "");
-    setCalendarId(mode === "create" ? "office" : initialCalendarId);
-    setAllDay(false);
+    setCalendarId(mode === "create" ? (initialCalendarId || "office") : initialCalendarId);
+    setAllDay(initialAllDay); // Use the prop
     setDuration(1);
-  }, [open, initialStart, initialEnd, defaultTitle, mode, initialTitle, initialCalendarId]);
+  }, [open, initialStart, initialEnd, defaultTitle, mode, initialTitle, initialCalendarId, initialAllDay]);
 
   // Update end time when duration changes
   const updateEndFromDuration = (newDuration, startValue) => {

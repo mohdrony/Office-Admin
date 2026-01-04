@@ -1,0 +1,491 @@
+/* src/pages/my-page/MyPage.scss */
+
+.myPage {
+    width: 100%;
+    min-width: 0;
+}
+
+.myPageSurface {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================= Toolbar ================= */
+.mpToolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: 10px 18px;
+    background: var(--tl-sticky-bg, var(--panel));
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+
+    .title {
+        font-size: 1.1rem;
+        font-weight: 650;
+        color: var(--text);
+    }
+}
+
+/* ================= Content Stack ================= */
+.mpContentScroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.stacked-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1000px;
+    /* Constrain width for better readability */
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= User Info Card ================= */
+.user-info-card {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.25rem 2rem;
+
+    .divider-v {
+        width: 1px;
+        height: 60px;
+        background: var(--border);
+        opacity: 0.6;
+    }
+
+    /* Profile Section */
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 200px;
+
+        .user-details {
+            .user-name {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: var(--text);
+            }
+
+            .user-role {
+                font-size: 0.9rem;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+        }
+    }
+
+    /* Stats Section */
+    .stats-block {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .stats-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+                .val {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: var(--text);
+                    line-height: 1.2;
+                }
+
+                .lbl {
+                    font-size: 0.8rem;
+                    color: var(--muted);
+                }
+
+                &.highlight .val {
+                    color: var(--accent);
+                }
+            }
+        }
+    }
+
+    /* Projects Section */
+    .projects-block {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .stats-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .project-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+    }
+}
+
+/* Common Header Styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+
+    .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        font-weight: 600;
+    }
+
+    .current-date-range {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-weight: 500;
+    }
+
+    .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Button & Control Styles */
+.iconBtn {
+    height: 32px;
+    width: 32px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s;
+
+    &:hover {
+        background: var(--hover);
+    }
+}
+
+.ghostBtn {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: var(--hover);
+    }
+}
+
+.eeBtn.primary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.1s;
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.segmented {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.06);
+
+    button {
+        height: 32px;
+        padding: 0 10px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+
+        &:hover {
+            background: var(--hover);
+            color: var(--text);
+        }
+
+        &.active {
+            background: var(--hover);
+            color: var(--text);
+            font-weight: 700;
+        }
+    }
+}
+
+/* ================= Views ================= */
+.week-view {
+    .days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1rem;
+        text-align: center;
+
+        .day-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+
+            .day-name {
+                font-size: 0.9rem;
+                color: var(--muted);
+            }
+
+            .hours-val {
+                font-weight: 600;
+                font-size: 1rem;
+                color: var(--text);
+            }
+
+            .bar-container {
+                width: 40px;
+                height: 150px;
+                background: var(--hover);
+                border-radius: 20px;
+                position: relative;
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                overflow: hidden;
+
+                .bar {
+                    width: 100%;
+                    background: var(--accent);
+                    border-radius: 20px;
+                    transition: height 0.3s ease;
+                    min-height: 4px;
+
+                    &.overtime {
+                        background: #ff9800;
+                    }
+
+                    &.undertime {
+                        background: #f44336;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.week-summary {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+
+    .stat {
+        text-align: right;
+
+        span.label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        span.value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+    }
+}
+
+.month-view {
+    .month-grid-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .month-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+
+        .month-day {
+            aspect-ratio: 1;
+            background: var(--hover);
+            border-radius: 8px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            &.padding {
+                background: transparent;
+            }
+
+            .day-num {
+                color: var(--muted);
+            }
+
+            .day-hours {
+                align-self: flex-end;
+                font-weight: 700;
+                color: var(--text);
+                background: rgba(255, 255, 255, 0.1);
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 0.8rem;
+            }
+
+            &.overtime {
+                border: 1px solid rgba(255, 152, 0, 0.5);
+            }
+
+            &.undertime {
+                border: 1px solid rgba(244, 67, 54, 0.5);
+            }
+
+            &.weekend {
+                opacity: 0.5;
+            }
+        }
+    }
+}
+
+.year-view {
+    .year-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+
+        @media (max-width: 800px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .year-month-card {
+        background: var(--hover);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 100px;
+
+        .month-name {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .month-hours {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        &.intensity-high {
+            border-color: var(--accent);
+        }
+    }
+}
+
+
+/* Mobile Stack */
+@media (max-width: 850px) {
+    .user-info-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+
+        .divider-v {
+            width: 100%;
+            height: 1px;
+        }
+
+        .user-profile,
+        .stats-block,
+        .projects-block,
+        .action-block {
+            width: 100%;
+        }
+
+        .action-block {
+            margin-left: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+}
