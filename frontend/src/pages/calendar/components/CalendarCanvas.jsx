@@ -22,9 +22,12 @@ export default function CalendarCanvas({
   onEventUpdate,
   onEventClick, // We can use this directly now
 }) {
+  console.log("DEBUG: CalendarCanvas events:", events);
   const eventsService = useMemo(() => createEventsServicePlugin(), []);
   const controls = useMemo(() => createCalendarControlsPlugin(), []);
   const dragAndDrop = useMemo(() => createDragAndDropPlugin(), []);
+
+  const views = useMemo(() => [createViewDay(), createViewWeek(), createViewMonthGrid()], []);
 
   const calendarApp = useCalendarApp({
     calendars: {
@@ -60,9 +63,9 @@ export default function CalendarCanvas({
       },
     },
 
-    views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
+    views,
     events: [], // Initial events will be set via effect
-    plugins: [eventsService, controls],
+    plugins: [eventsService, controls, dragAndDrop],
     callbacks: {
       onRangeUpdate(range) {
         onReady?.({ calendarApp, controls, range });
@@ -101,7 +104,6 @@ export default function CalendarCanvas({
   useEffect(() => {
     if (!events) return;
     if (eventsService) {
-      // Schedule-X requires Temporal objects for start/end
       eventsService.set(events);
     }
   }, [events, eventsService]);

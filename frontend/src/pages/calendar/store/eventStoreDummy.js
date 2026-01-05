@@ -17,6 +17,7 @@ let EVENTS = [
     id: "e1",
     title: "Jour fixe — Ville-Quartier",
     // Use Temporal.ZonedDateTime for time-grid placement
+    // Global Temporal used here
     start: Temporal.PlainDate.from(getRelativeDate(0))
       .toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "10:00" }),
     end: Temporal.PlainDate.from(getRelativeDate(0))
@@ -47,14 +48,10 @@ let EVENTS = [
 ];
 
 export function listEvents() {
-  // Return a clone to avoid direct mutation
-  // Note: Temporal objects are primitives/immutable-ish, but array needs cloning
   return [...EVENTS];
 }
 
 export function createEvent(event) {
-  // Mock creation
-  // Input expected to be partial, we might need to cast to Temporal if not already
   const newEv = {
     ...event,
     id: crypto.randomUUID(),

@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { projectsDummy } from "../../../data/projectsDummy";
 import { mapAllProjectsToEvents } from "../utils/projectMapper";
 import { listEvents, createEvent as createStoreEvent, deleteEvent as deleteStoreEvent } from "../store/eventStoreDummy";
+import { fetchHolidays } from "../../../api/holidays";
 import { TZ_DEFAULT } from "../types";
+
 
 /**
  * Internal-first event hook.
@@ -15,38 +17,55 @@ export default function useCalendarEvents() {
 
   // Initial load
   useEffect(() => {
-    setIsLoading(true);
+    let mounted = true;
 
-    // 1. Get Project Events (via mapper)
-    const projectEvents = mapAllProjectsToEvents(projectsDummy);
+    (async () => {
+      setIsLoading(true);
 
-    // 2. Get Internal/Calendar Events (via store)
-    const calendarEvents = listEvents();
+      // 1. Get Project Events (via mapper)
+      const projects = mapAllProjectsToEvents(projectsDummy);
 
-    // 3. Merge
-    setEvents([...projectEvents, ...calendarEvents]);
+      // 2. Get Internal/Calendar Events (via store)
+      const internal = listEvents();
 
-    setIsLoading(false);
+      // 3. Get Holidays
+      let holidays = [];
+      try {
+        const holidayData = await fetchHolidays();
+        holidays = holidayData.map(h => {
+          // Schedule-X requires Temporal.PlainDate for all-day events
+          return {
+            id: `holiday-${h.id}`,
+            title: h.name,
+            calendarId: 'holidays',
+            start: Temporal.PlainDate.from(h.date),
+            end: Temporal.PlainDate.from(h.date),
+            isHoliday: true,
+            holidayType: h.type
+          };
+        });
+      } catch (e) {
+        console.error("Failed to fetch holidays", e);
+      }
+
+      if (mounted) {
+        setEvents([...projects, ...internal, ...holidays]);
+        setIsLoading(false);
+      }
+    })();
+
+    return () => { mounted = false; };
   }, []);
 
   const scheduleXEvents = useMemo(() => events, [events]);
 
   const createEvent = useCallback((draft) => {
     // 1. Convert DTO to Temporal-ready event via store
-    // The store's createEvent expects just { title ... }, returns { id... start: Temporal... }
-    // But our store currently expects raw temporal in this simplified version:
-
-    // We need to adhere to what EventEditor sends:
-    // { id, title, allDay, startAt (ISO string), endAt (ISO string), calendarId }
-
-    // We'll adapt it to match the store's "simple" expectation which we defined in step 168
-    // { title, start: Temporal..., end: Temporal..., calendarId, description }
-
     const simpleEvent = {
       title: draft.title,
       calendarId: draft.calendarId || 'office',
       description: 'New Event',
-      // Use ZonedDateTime to preserve time info for grid placement
+      // Schema: Temporal.ZonedDateTime for timed events
       start: Temporal.ZonedDateTime.from(draft.startAt),
       end: Temporal.ZonedDateTime.from(draft.endAt),
     };
@@ -57,9 +76,6 @@ export default function useCalendarEvents() {
   }, []);
 
   const updateEvent = useCallback((id, draft) => {
-    // 1. Convert DTO to Temporal
-    // draft: { title, startAt, endAt, calendarId, ... }
-
     // We only update what IS passed.
     const patch = {};
     if (draft.title !== undefined) patch.title = draft.title;

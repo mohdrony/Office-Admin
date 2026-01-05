@@ -7,6 +7,11 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import SettingsSystemDaydreamRoundedIcon from "@mui/icons-material/SettingsSystemDaydreamRounded";
 import ColorLensRoundedIcon from "@mui/icons-material/ColorLensRounded";
 import ContrastRoundedIcon from "@mui/icons-material/ContrastRounded";
+import DateRangeRoundedIcon from "@mui/icons-material/DateRangeRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { useEffect, useState } from "react";
+import { fetchHolidays, createHoliday, deleteHoliday } from "../../api/holidays";
 
 const ACCENTS = [
     { key: "yellow", label: "Yellow" },
@@ -18,6 +23,52 @@ const ACCENTS = [
 
 export default function Settings() {
     const { themeMode, setThemeMode, accent, setAccent } = useTheme();
+
+    const [holidays, setHolidays] = useState([]);
+    const [newHolidayDate, setNewHolidayDate] = useState("");
+    const [newHolidayName, setNewHolidayName] = useState("");
+    const [newHolidayType, setNewHolidayType] = useState("FULL_DAY");
+
+    useEffect(() => {
+        loadHolidays();
+    }, []);
+
+    async function loadHolidays() {
+        try {
+            const data = await fetchHolidays();
+            setHolidays(data);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function handleAddHoliday(e) {
+        e.preventDefault();
+        if (!newHolidayDate || !newHolidayName) return;
+        try {
+            await createHoliday({
+                date: newHolidayDate,
+                name: newHolidayName,
+                type: newHolidayType
+            });
+            setNewHolidayDate("");
+            setNewHolidayName("");
+            setNewHolidayType("FULL_DAY");
+            loadHolidays();
+        } catch (e) {
+            alert("Failed to add holiday");
+        }
+    }
+
+    async function handleDeleteHoliday(id) {
+        if (!confirm("Delete this holiday?")) return;
+        try {
+            await deleteHoliday(id);
+            loadHolidays();
+        } catch (e) {
+            alert("Failed to delete");
+        }
+    }
 
     return (
         <div className="settingsPage">
@@ -115,6 +166,71 @@ export default function Settings() {
                             <div className="toggleRow">
                                 <span className="label">Weekly Digest</span>
                                 <div className="toggleSwitch checked" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* --- Public Holidays Section --- */}
+                    <div className="settingSection">
+                        <h3>
+                            <DateRangeRoundedIcon className="icon" fontSize="small" />
+                            Public Holidays
+                        </h3>
+                        <p className="description">Define public holidays for the company.</p>
+
+                        <div className="holidaysContainer" style={{ width: '100%', marginTop: '1rem' }}>
+                            <form onSubmit={handleAddHoliday} style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, minWidth: 120 }}>
+                                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Date</span>
+                                    <input
+                                        type="date"
+                                        value={newHolidayDate}
+                                        onChange={e => setNewHolidayDate(e.target.value)}
+                                        style={{ padding: '8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}
+                                        required
+                                    />
+                                </label>
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 2, minWidth: 150 }}>
+                                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Name</span>
+                                    <input
+                                        type="text"
+                                        value={newHolidayName}
+                                        onChange={e => setNewHolidayName(e.target.value)}
+                                        placeholder="e.g. New Year"
+                                        style={{ padding: '8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}
+                                        required
+                                    />
+                                </label>
+                                <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Type</span>
+                                    <select
+                                        value={newHolidayType}
+                                        onChange={e => setNewHolidayType(e.target.value)}
+                                        style={{ padding: '8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}
+                                    >
+                                        <option value="FULL_DAY">Full Day</option>
+                                        <option value="HALF_DAY">Half Day</option>
+                                    </select>
+                                </label>
+                                <button type="submit" className="eeBtn primary" style={{ height: 36, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                    <AddRoundedIcon fontSize="small" /> Add
+                                </button>
+                            </form>
+
+                            <div className="holidaysList" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                {holidays.map(h => (
+                                    <div key={h.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--hover)', borderRadius: 8 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                            <span style={{ fontFamily: 'monospace', fontWeight: 500 }}>{h.date}</span>
+                                            <span>{h.name}</span>
+                                            {h.type === 'HALF_DAY' && <span style={{ fontSize: '0.7rem', background: 'var(--accent)', color: '#fff', padding: '2px 6px', borderRadius: 4 }}>Half</span>}
+                                        </div>
+                                        <button onClick={() => handleDeleteHoliday(h.id)} style={{ padding: 4, borderRadius: 4, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--muted)', display: 'flex' }}>
+                                            <DeleteRoundedIcon fontSize="small" />
+                                        </button>
+                                    </div>
+                                ))}
+                                {holidays.length === 0 && <div style={{ color: 'var(--muted)', fontStyle: 'italic', fontSize: '0.9rem' }}>No holidays defined.</div>}
                             </div>
                         </div>
                     </div>

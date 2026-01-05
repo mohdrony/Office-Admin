@@ -8,6 +8,7 @@ import EventEditor from "../calendar/components/EventEditor";
 import TimeEntryModal from "../projects/components/TimeEntryModal";
 import ProjectTag from "../../components/ProjectTag/ProjectTag";
 import { TZ_DEFAULT } from "../calendar/types";
+import { fetchHolidays } from "../../api/holidays";
 
 // MUI Components
 import { Menu, MenuItem, ListItemIcon, ListItemText, Avatar, Chip } from "@mui/material";
@@ -39,6 +40,27 @@ export default function MyPage() {
 
     // Time entries still from local dummy for now
     const { timeEntries } = myPageData;
+
+    const [holidays, setHolidays] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await fetchHolidays();
+                setHolidays(data);
+            } catch (e) {
+                console.error("Failed to load holidays in MyPage", e);
+            }
+        })();
+    }, []);
+
+    const holidayMap = useMemo(() => {
+        const map = {};
+        holidays.forEach(h => {
+            map[h.date] = h;
+        });
+        return map;
+    }, [holidays]);
 
     // --- Modal State ---
     const [isEventEditorOpen, setIsEventEditorOpen] = useState(false);
@@ -104,6 +126,7 @@ export default function MyPage() {
         const startOfWeek = cursorDate.subtract({ days: dayOfWeek - 1 });
         const days = [];
         let totalWeekHours = 0;
+        let expectedHours = 0;
 
         for (let i = 0; i < 7; i++) {
             const date = startOfWeek.add({ days: i });
@@ -114,13 +137,29 @@ export default function MyPage() {
 
             const dayName = date.toLocaleString('en-US', { weekday: 'short' });
             let status = "normal";
-            if (hours > 8) status = "overtime";
-            else if (hours < 8 && hours > 0 && date.dayOfWeek <= 5) status = "undertime";
+            const isWeekend = date.dayOfWeek > 5;
+            const holiday = holidayMap[dateStr];
 
-            days.push({ date: dateStr, dayName, hours, status, isWeekend: date.dayOfWeek > 5 });
+            if (holiday) {
+                status = "holiday";
+                // If it's a holiday, we don't expect work hours (unless they worked)
+            } else if (!isWeekend) {
+                expectedHours += 8;
+            }
+
+            if (!holiday) {
+                if (hours > 8) status = "overtime";
+                else if (hours < 8 && hours > 0 && date.dayOfWeek <= 5) status = "undertime";
+            }
+
+            // Adjust holiday status priority? 
+            // If they worked on holiday, maybe show both? 
+            // For now, if holiday, show holiday.
+
+            days.push({ date: dateStr, dayName, hours, status, isWeekend, holidayName: holiday?.name });
         }
-        return { days, totalWeekHours };
-    }, [timeEntries, cursorDate, viewMode]);
+        return { days, totalWeekHours, expectedHours };
+    }, [timeEntries, cursorDate, viewMode, holidayMap]);
 
     const monthData = useMemo(() => {
         if (viewMode !== VIEW_MODES.MONTH) return null;
@@ -139,13 +178,20 @@ export default function MyPage() {
             const hours = daysEntries.reduce((acc, curr) => acc + curr.hours, 0);
             totalMonthHours += hours;
             let status = "normal";
+            const holiday = holidayMap[dateStr];
+
             if (hours > 8) status = "overtime";
             else if (hours < 8 && hours > 0 && date.dayOfWeek <= 5) status = "undertime";
             if (date.dayOfWeek > 5) status = "weekend";
-            days.push({ type: 'day', date: dateStr, dayNum: i, hours, status });
+
+            if (holiday) {
+                status = "holiday";
+            }
+
+            days.push({ type: 'day', date: dateStr, dayNum: i, hours, status, holidayName: holiday?.name });
         }
         return { days, totalMonthHours };
-    }, [timeEntries, cursorDate, viewMode]);
+    }, [timeEntries, cursorDate, viewMode, holidayMap]);
 
     const yearData = useMemo(() => {
         if (viewMode !== VIEW_MODES.YEAR) return null;
@@ -391,13 +437,14 @@ export default function MyPage() {
                                                         />
                                                     </div>
                                                     <span className="day-name">{day.dayName}</span>
+                                                    {day.holidayName && <div style={{ fontSize: '0.7rem', color: '#888', marginTop: -4 }}>{day.holidayName}</div>}
                                                 </div>
                                             ))}
                                         </div>
                                         <div className="week-summary">
                                             <div className="stat">
                                                 <span className="label">Total Hours</span>
-                                                <span className="value">{weekData.totalWeekHours} / 40</span>
+                                                <span className="value">{weekData.totalWeekHours} / {weekData.expectedHours}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -472,14 +519,16 @@ export default function MyPage() {
                 {...editorProps}
             />
 
-            {selectedProject && (
-                <TimeEntryModal
-                    open={isTimeEntryModalOpen}
-                    onClose={() => setIsTimeEntryModalOpen(false)}
-                    onSave={() => setIsTimeEntryModalOpen(false)}
-                    project={selectedProject}
-                />
-            )}
-        </div>
+            {
+                selectedProject && (
+                    <TimeEntryModal
+                        open={isTimeEntryModalOpen}
+                        onClose={() => setIsTimeEntryModalOpen(false)}
+                        onSave={() => setIsTimeEntryModalOpen(false)}
+                        project={selectedProject}
+                    />
+                )
+            }
+        </div >
     );
 }

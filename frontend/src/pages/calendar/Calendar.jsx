@@ -9,6 +9,34 @@ import CalendarToolbar from "./components/CalendarToolbar";
 import EventEditor from "./components/EventEditor";
 import EventDetailModal from "./components/EventDetailModal";
 import { TZ_DEFAULT } from "./types";
+import React from 'react';
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Calendar Error Boundary caught:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 20, background: '#fee', color: '#c00' }}>
+          <h2>Calendar Crashed</h2>
+          <pre>{this.state.error.toString()}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function toJSDate(anyTemporalOrString) {
   if (!anyTemporalOrString) return null;
@@ -271,9 +299,10 @@ export default function Calendar() {
     { id: 'office', label: 'Office', color: '#4ea1ff' },
     { id: 'projects', label: 'Projects', color: '#5ee38b' },
     { id: 'vacation', label: 'Vacation', color: '#ff4e4e' },
+    { id: 'holidays', label: 'Holidays', color: '#aaaaaa' },
   ], []);
 
-  const [visibleCalendars, setVisibleCalendars] = useState(() => new Set(['office', 'projects', 'vacation']));
+  const [visibleCalendars, setVisibleCalendars] = useState(() => new Set(['office', 'projects', 'vacation', 'holidays']));
 
   const toggleCalendar = useCallback((id) => {
     setVisibleCalendars(prev => {
@@ -311,16 +340,18 @@ export default function Calendar() {
 
         {isLoading ? <div className="calLoading">Loading…</div> : null}
 
-        <CalendarCanvas
-          events={filteredEvents}
-          onReady={({ controls, range }) => {
-            if (controls) setControls(controls);
-            if (range) setRange(range);
-          }}
-          onClickDateTime={openCreateAt}
-          onClickDate={openCreateAllDay}
-          onEventClick={handleEventClick}
-        />
+        <ErrorBoundary>
+          <CalendarCanvas
+            events={filteredEvents}
+            onReady={({ controls, range }) => {
+              if (controls) setControls(controls);
+              if (range) setRange(range);
+            }}
+            onClickDateTime={openCreateAt}
+            onClickDate={openCreateAllDay}
+            onEventClick={handleEventClick}
+          />
+        </ErrorBoundary>
 
         <EventDetailModal
           isOpen={!!selectedEvent}
@@ -329,6 +360,7 @@ export default function Calendar() {
           onEdit={handleEditFromDetail}
           onDelete={() => handleDelete(selectedEvent.id)}
           calendars={CALENDARS}
+          isHoliday={selectedEvent?.calendarId === 'holidays'} // pass flag
         />
 
         <EventEditor

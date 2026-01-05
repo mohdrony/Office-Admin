@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'people',
     'events',
     'time_entries',
+    'holidays',
 
     'rest_framework',
     'api',

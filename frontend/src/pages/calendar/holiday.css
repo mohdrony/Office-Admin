@@ -1,0 +1,9 @@
+/* Holiday styling for Calendar */
+.sx__event.is-holiday {
+    background-color: #aaaaaa !important;
+    border-color: #888 !important;
+    color: #fff !important;
+    font-style: italic;
+    pointer-events: none;
+    /* Make read-only visually */
+}

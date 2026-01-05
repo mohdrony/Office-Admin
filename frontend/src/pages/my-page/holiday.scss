@@ -1,0 +1,48 @@
+/* Holiday Styles */
+.bar.holiday {
+    background: #aaaaaa !important;
+}
+
+.bar-container.holiday::after {
+    content: "Holiday";
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #666;
+    font-weight: 600;
+    writing-mode: vertical-lr;
+    /* Vertically oriented text */
+    transform: rotate(180deg);
+}
+
+.month-day.holiday {
+    background: #f0f0f0 !important;
+    border: 1px dashed #ccc;
+    position: relative;
+}
+
+.month-day.holiday .day-num {
+    color: #888;
+}
+
+.month-day.holiday .day-hours {
+    display: none;
+}
+
+.month-day.holiday::after {
+    content: attr(data-holiday-name);
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 0.7rem;
+    color: #888;
+    font-weight: 600;
+    text-align: right;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
