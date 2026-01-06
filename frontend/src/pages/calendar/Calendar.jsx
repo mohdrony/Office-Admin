@@ -9,7 +9,7 @@ import CalendarToolbar from "./components/CalendarToolbar";
 import EventEditor from "./components/EventEditor";
 import EventDetailModal from "./components/EventDetailModal";
 import { TZ_DEFAULT } from "./types";
-import React from 'react';
+import React from "react";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 20, background: '#fee', color: '#c00' }}>
+        <div style={{ padding: 20, background: "#fee", color: "#c00" }}>
           <h2>Calendar Crashed</h2>
           <pre>{this.state.error.toString()}</pre>
         </div>
@@ -60,7 +60,12 @@ function toJSDate(anyTemporalOrString) {
       typeof anyTemporalOrString.day === "number"
     ) {
       const { year, month, day } = anyTemporalOrString;
-      return new Date(`${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}T00:00:00`);
+      return new Date(
+        `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+          2,
+          "0"
+        )}T00:00:00`
+      );
     }
   }
 
@@ -68,7 +73,12 @@ function toJSDate(anyTemporalOrString) {
   if (anyTemporalOrString?.toPlainDate) {
     const d = anyTemporalOrString.toPlainDate();
     const { year, month, day } = d;
-    return new Date(`${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}T00:00:00`);
+    return new Date(
+      `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+        2,
+        "0"
+      )}T00:00:00`
+    );
   }
 
   return null;
@@ -97,16 +107,14 @@ function formatTitleFromRange(range, view) {
   return `${fmt.format(startJs)} – ${fmt.format(endJs)}`;
 }
 
-
 function todayPlainDate() {
   // Temporal is global because we imported temporal-polyfill/global in CalendarCanvas
   return Temporal.Now.plainDateISO(TZ_DEFAULT);
 }
 
-
-
 export default function Calendar() {
-  const { isLoading, scheduleXEvents, createEvent, updateEvent, deleteEvent } = useCalendarEvents();
+  const { isLoading, scheduleXEvents, createEvent, updateEvent, deleteEvent } =
+    useCalendarEvents();
 
   const [controls, setControls] = useState(null);
 
@@ -132,8 +140,10 @@ export default function Calendar() {
     // Schedule-X might return a string (YYYY-MM-DD HH:mm)
     let zdt;
     try {
-      if (typeof zdtOrString === 'string') {
-        zdt = Temporal.PlainDateTime.from(zdtOrString.replace(' ', 'T')).toZonedDateTime(TZ_DEFAULT);
+      if (typeof zdtOrString === "string") {
+        zdt = Temporal.PlainDateTime.from(
+          zdtOrString.replace(" ", "T")
+        ).toZonedDateTime(TZ_DEFAULT);
       } else {
         zdt = zdtOrString;
       }
@@ -173,20 +183,27 @@ export default function Calendar() {
 
     let plainDate;
     try {
-      if (typeof plainDateOrString === 'string') {
+      if (typeof plainDateOrString === "string") {
         plainDate = Temporal.PlainDate.from(plainDateOrString);
       } else {
         plainDate = plainDateOrString;
       }
     } catch (e) {
-      console.error("Invalid date passed to openCreateAllDay", plainDateOrString, e);
+      console.error(
+        "Invalid date passed to openCreateAllDay",
+        plainDateOrString,
+        e
+      );
       return;
     }
 
     if (!plainDate) return;
 
     // month grid clicks give Temporal.PlainDate
-    const start = plainDate.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "09:00" });
+    const start = plainDate.toZonedDateTime({
+      timeZone: TZ_DEFAULT,
+      plainTime: "09:00",
+    });
     setDraftStart(start);
     setDraftEnd(start.add({ hours: 1 }));
     setDraftTitle("");
@@ -212,10 +229,12 @@ export default function Calendar() {
     // Let's create ZDT from the strings.
 
     try {
-      const safeStart = selectedEvent.start.replace(' ', 'T');
-      const safeEnd = selectedEvent.end.replace(' ', 'T');
-      const start = Temporal.PlainDateTime.from(safeStart).toZonedDateTime(TZ_DEFAULT);
-      const end = Temporal.PlainDateTime.from(safeEnd).toZonedDateTime(TZ_DEFAULT);
+      const safeStart = selectedEvent.start.replace(" ", "T");
+      const safeEnd = selectedEvent.end.replace(" ", "T");
+      const start =
+        Temporal.PlainDateTime.from(safeStart).toZonedDateTime(TZ_DEFAULT);
+      const end =
+        Temporal.PlainDateTime.from(safeEnd).toZonedDateTime(TZ_DEFAULT);
 
       setDraftStart(start);
       setDraftEnd(end);
@@ -226,7 +245,7 @@ export default function Calendar() {
       // For now, let's just re-use the create flow but pre-fill data effectively
       // or we can add an "edit" mode to Editor if we want to support updates (requires ID).
 
-      // We'll set the title manually via props or state? 
+      // We'll set the title manually via props or state?
       // EventEditor takes `initialStart/End`. Title is internal state.
       // We might need to refactor EventEditor slightly to accept `initialValues` prop object.
       // FOR NOW: Let's just open it and see. The user said "like a detail view... with edit button".
@@ -239,12 +258,14 @@ export default function Calendar() {
     }
   }, [selectedEvent]);
 
-  const handleDelete = useCallback((id) => {
-    deleteEvent(id);
-    setEditorOpen(false);
-    setSelectedEvent(null);
-  }, [deleteEvent]);
-
+  const handleDelete = useCallback(
+    (id) => {
+      deleteEvent(id);
+      setEditorOpen(false);
+      setSelectedEvent(null);
+    },
+    [deleteEvent]
+  );
 
   const title = useMemo(
     () => formatTitleFromRange(range, activeView),
@@ -267,8 +288,8 @@ export default function Calendar() {
       activeView === "day"
         ? { days: 1 }
         : activeView === "week"
-          ? { days: 7 }
-          : { months: 1 };
+        ? { days: 7 }
+        : { months: 1 };
 
     applyDate(cursorDate.subtract(step));
   }, [activeView, cursorDate, applyDate]);
@@ -278,8 +299,8 @@ export default function Calendar() {
       activeView === "day"
         ? { days: 1 }
         : activeView === "week"
-          ? { days: 7 }
-          : { months: 1 };
+        ? { days: 7 }
+        : { months: 1 };
 
     applyDate(cursorDate.add(step));
   }, [activeView, cursorDate, applyDate]);
@@ -295,17 +316,22 @@ export default function Calendar() {
   );
 
   // Calendar Visibility State
-  const CALENDARS = useMemo(() => [
-    { id: 'office', label: 'Office', color: '#4ea1ff' },
-    { id: 'projects', label: 'Projects', color: '#5ee38b' },
-    { id: 'vacation', label: 'Vacation', color: '#ff4e4e' },
-    { id: 'holidays', label: 'Holidays', color: '#aaaaaa' },
-  ], []);
+  const CALENDARS = useMemo(
+    () => [
+      { id: "office", label: "Office", color: "#4ea1ff" },
+      { id: "projects", label: "Projects", color: "#5ee38b" },
+      { id: "vacation", label: "Vacation", color: "#ff4e4e" },
+      { id: "holidays", label: "Holidays", color: "#aaaaaa" },
+    ],
+    []
+  );
 
-  const [visibleCalendars, setVisibleCalendars] = useState(() => new Set(['office', 'projects', 'vacation', 'holidays']));
+  const [visibleCalendars, setVisibleCalendars] = useState(
+    () => new Set(["office", "projects", "vacation", "holidays"])
+  );
 
   const toggleCalendar = useCallback((id) => {
-    setVisibleCalendars(prev => {
+    setVisibleCalendars((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
@@ -315,7 +341,7 @@ export default function Calendar() {
 
   // Filter events based on visibility
   const filteredEvents = useMemo(() => {
-    return scheduleXEvents.filter(e => visibleCalendars.has(e.calendarId));
+    return scheduleXEvents.filter((e) => visibleCalendars.has(e.calendarId));
   }, [scheduleXEvents, visibleCalendars]);
 
   return (
@@ -349,6 +375,20 @@ export default function Calendar() {
             }}
             onClickDateTime={openCreateAt}
             onClickDate={openCreateAllDay}
+            onEventUpdate={(id, patch) => {
+              updateEvent(id, {
+                title: patch.title,
+                calendarId: patch.calendarId,
+                startAt:
+                  typeof patch.start === "string"
+                    ? patch.start
+                    : patch.start?.toString?.(),
+                endAt:
+                  typeof patch.end === "string"
+                    ? patch.end
+                    : patch.end?.toString?.(),
+              });
+            }}
             onEventClick={handleEventClick}
           />
         </ErrorBoundary>
@@ -360,7 +400,7 @@ export default function Calendar() {
           onEdit={handleEditFromDetail}
           onDelete={() => handleDelete(selectedEvent.id)}
           calendars={CALENDARS}
-          isHoliday={selectedEvent?.calendarId === 'holidays'} // pass flag
+          isHoliday={selectedEvent?.calendarId === "holidays"} // pass flag
         />
 
         <EventEditor
@@ -397,7 +437,6 @@ export default function Calendar() {
             }
           }}
         />
-
       </div>
     </div>
   );

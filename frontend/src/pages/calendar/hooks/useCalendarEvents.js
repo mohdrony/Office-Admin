@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { projectsDummy } from "../../../data/projectsDummy";
 import { mapAllProjectsToEvents } from "../utils/projectMapper";
-import { listEvents, createEvent as createStoreEvent, deleteEvent as deleteStoreEvent } from "../store/eventStoreDummy";
+import {
+  listEvents,
+  createEvent as createStoreEvent,
+  deleteEvent as deleteStoreEvent,
+} from "../store/eventStoreDummy";
 import { fetchHolidays } from "../../../api/holidays";
 import { TZ_DEFAULT } from "../types";
-
 
 /**
  * Internal-first event hook.
@@ -32,16 +35,17 @@ export default function useCalendarEvents() {
       let holidays = [];
       try {
         const holidayData = await fetchHolidays();
-        holidays = holidayData.map(h => {
+        holidays = holidayData.map((h) => {
           // Schedule-X requires Temporal.PlainDate for all-day events
+          const d = Temporal.PlainDate.from(h.date);
           return {
             id: `holiday-${h.id}`,
             title: h.name,
-            calendarId: 'holidays',
-            start: Temporal.PlainDate.from(h.date),
-            end: Temporal.PlainDate.from(h.date),
+            calendarId: "holidays",
+            start: d,
+            end: d.add({ days: 1 }),
             isHoliday: true,
-            holidayType: h.type
+            holidayType: h.type,
           };
         });
       } catch (e) {
@@ -54,7 +58,9 @@ export default function useCalendarEvents() {
       }
     })();
 
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const scheduleXEvents = useMemo(() => events, [events]);
@@ -63,8 +69,8 @@ export default function useCalendarEvents() {
     // 1. Convert DTO to Temporal-ready event via store
     const simpleEvent = {
       title: draft.title,
-      calendarId: draft.calendarId || 'office',
-      description: 'New Event',
+      calendarId: draft.calendarId || "office",
+      description: "New Event",
       // Schema: Temporal.ZonedDateTime for timed events
       start: Temporal.ZonedDateTime.from(draft.startAt),
       end: Temporal.ZonedDateTime.from(draft.endAt),
@@ -72,7 +78,7 @@ export default function useCalendarEvents() {
 
     const savedEvent = createStoreEvent(simpleEvent);
 
-    setEvents(prev => [...prev, savedEvent]);
+    setEvents((prev) => [...prev, savedEvent]);
   }, []);
 
   const updateEvent = useCallback((id, draft) => {
@@ -83,12 +89,14 @@ export default function useCalendarEvents() {
     if (draft.startAt) patch.start = Temporal.ZonedDateTime.from(draft.startAt);
     if (draft.endAt) patch.end = Temporal.ZonedDateTime.from(draft.endAt);
 
-    setEvents(prev => prev.map(e => {
-      if (e.id === id) {
-        return { ...e, ...patch };
-      }
-      return e;
-    }));
+    setEvents((prev) =>
+      prev.map((e) => {
+        if (e.id === id) {
+          return { ...e, ...patch };
+        }
+        return e;
+      })
+    );
   }, []);
 
   return {
@@ -98,7 +106,7 @@ export default function useCalendarEvents() {
     updateEvent,
     deleteEvent: (id) => {
       deleteStoreEvent(id);
-      setEvents(prev => prev.filter(e => e.id !== id));
+      setEvents((prev) => prev.filter((e) => e.id !== id));
     },
   };
 }

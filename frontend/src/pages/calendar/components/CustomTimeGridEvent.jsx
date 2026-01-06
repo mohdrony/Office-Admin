@@ -1,59 +1,57 @@
-import React from 'react';
+// src/pages/calendar/components/CustomTimeGridEvent.jsx
+import React from "react";
 
 /**
  * Custom Time Grid Event Component
- * 
- * Simply renders the event content.
- * Drag and drop / resize is handled by the @schedule-x/drag-and-drop plugin
- * on the wrapping container managed by the library.
+ * Uses Schedule-X calendar colors (no hardcoded blue)
  */
 export default function CustomTimeGridEvent({ calendarEvent }) {
-    // --- Styling ---
-    // Get color from event or default
-    // We can use a default color if needed.
+  // Schedule-X injects colors on the wrapper; keep our inner div transparent
+  const isHoliday =
+    calendarEvent?.calendarId === "holidays" || calendarEvent?.isHoliday;
 
-    const style = {
-        height: '100%',
-        width: '100%',
-        background: '#4ea1ff', // Default blue
-        color: 'white',
-        borderRadius: '4px',
-        padding: '2px 4px',
-        fontSize: '0.75rem',
-        overflow: 'hidden',
-        userSelect: 'none',
-        boxSizing: 'border-box',
-        // Cursor handled by parent if draggable
-    };
+  // Time Formatting (HH:MM - HH:MM)
+  let timeStr = "";
+  try {
+    const start = calendarEvent?.start;
+    const end = calendarEvent?.end;
 
-    // Time Formatting
-    let timeStr = "";
-    try {
-        if (calendarEvent.start && calendarEvent.end) {
-            // Ensure strings
-            const startStr = typeof calendarEvent.start === 'string' ? calendarEvent.start : calendarEvent.start.toString();
-            const endStr = typeof calendarEvent.end === 'string' ? calendarEvent.end : calendarEvent.end.toString();
-
-            // Extract time part if available
-            const startPart = startStr.includes(' ') ? startStr.split(' ')[1] : (startStr.includes('T') ? startStr.split('T')[1] : null);
-            const endPart = endStr.includes(' ') ? endStr.split(' ')[1] : (endStr.includes('T') ? endStr.split('T')[1] : null);
-
-            if (startPart && endPart) {
-                // Simplified HH:MM
-                timeStr = `${startPart.substring(0, 5)} - ${endPart.substring(0, 5)}`;
-            }
-        }
-    } catch (e) {
-        console.warn("CustomTimeGridEvent: failed to format time", calendarEvent);
+    // Timed events are ZonedDateTime; all-day are PlainDate (no time)
+    if (
+      start &&
+      end &&
+      typeof start.hour === "number" &&
+      typeof end.hour === "number"
+    ) {
+      const pad = (n) => String(n).padStart(2, "0");
+      timeStr = `${pad(start.hour)}:${pad(start.minute)} - ${pad(
+        end.hour
+      )}:${pad(end.minute)}`;
     }
+  } catch {
+    // keep empty
+  }
 
-    return (
-        <div
-            className="custom-time-event"
-            style={style}
-        >
-            <div style={{ fontWeight: 600 }}>{calendarEvent.title}</div>
-            <div style={{ opacity: 0.9 }}>{timeStr}</div>
-        </div>
-    );
+  return (
+    <div
+      className={`custom-time-event ${isHoliday ? "is-holiday" : ""}`}
+      style={{
+        height: "100%",
+        width: "100%",
+        background: "transparent", // IMPORTANT: don't override Schedule-X colors
+        color: "inherit",
+        borderRadius: 8,
+        padding: "4px 6px",
+        fontSize: "0.75rem",
+        overflow: "hidden",
+        userSelect: "none",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ fontWeight: 650, lineHeight: 1.15 }}>
+        {calendarEvent?.title}
+      </div>
+      {timeStr ? <div style={{ opacity: 0.85 }}>{timeStr}</div> : null}
+    </div>
+  );
 }

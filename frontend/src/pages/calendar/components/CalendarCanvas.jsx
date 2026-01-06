@@ -1,3 +1,6 @@
+// src/pages/calendar/components/CalendarCanvas.jsx
+
+import "temporal-polyfill/global";
 import "@schedule-x/theme-default/dist/index.css";
 
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
@@ -20,15 +23,13 @@ export default function CalendarCanvas({
   onClickDateTime: handleClickDateTime,
   onClickDate: handleClickDate,
   onEventUpdate,
-  onEventClick, // We can use this directly now
+  onEventClick,
 }) {
-  console.log("DEBUG: CalendarCanvas events:", events);
   const eventsService = useMemo(() => createEventsServicePlugin(), []);
   const controls = useMemo(() => createCalendarControlsPlugin(), []);
   const dragAndDrop = useMemo(() => createDragAndDropPlugin(), []);
 
-  const views = useMemo(() => [createViewDay(), createViewWeek(), createViewMonthGrid()], []);
-
+  // IMPORTANT: React wrapper expects config object (doc style), not createCalendar(...)
   const calendarApp = useCalendarApp({
     calendars: {
       office: {
@@ -61,14 +62,45 @@ export default function CalendarCanvas({
           onContainer: "#e9fff1",
         },
       },
+      vacation: {
+        label: "Vacation",
+        colorName: "vacation",
+        isVisible: true,
+        lightColors: {
+          main: "#ff4e4e",
+          container: "#ffecec",
+          onContainer: "#3a0000",
+        },
+        darkColors: {
+          main: "#ff4e4e",
+          container: "#2a1111",
+          onContainer: "#ffecec",
+        },
+      },
+      holidays: {
+        label: "Holidays",
+        colorName: "holidays",
+        isVisible: true,
+        lightColors: {
+          main: "#aaaaaa",
+          container: "#f1f1f1",
+          onContainer: "#222222",
+        },
+        darkColors: {
+          main: "#aaaaaa",
+          container: "#1e1e1e",
+          onContainer: "#f1f1f1",
+        },
+      },
     },
 
-    views,
-    events: [], // Initial events will be set via effect
+    views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
+    events: [], // pushed via eventsService.set(...)
     plugins: [eventsService, controls, dragAndDrop],
+
     callbacks: {
       onRangeUpdate(range) {
-        onReady?.({ calendarApp, controls, range });
+        onReady?.({ controls, range });
       },
       onClickDateTime(dateTime) {
         handleClickDateTime?.(dateTime);
@@ -80,32 +112,20 @@ export default function CalendarCanvas({
         onEventClick?.(calendarEvent);
       },
       onEventUpdate(updatedEvent) {
-        // Schedule-X handles the UI update internally for the drag.
-        // We just need to persist it up.
-        // updatedEvent contains the new start/end times.
-        if (onEventUpdate) {
-          onEventUpdate(updatedEvent.id, {
-            start: updatedEvent.start,
-            end: updatedEvent.end,
-            calendarId: updatedEvent.calendarId,
-            title: updatedEvent.title
-          });
-        }
+        onEventUpdate?.(updatedEvent.id, {
+          start: updatedEvent.start,
+          end: updatedEvent.end,
+          calendarId: updatedEvent.calendarId,
+          title: updatedEvent.title,
+        });
       },
     },
   });
 
-
-  useEffect(() => {
-    onReady?.({ calendarApp, controls });
-  }, [calendarApp, controls, onReady]);
-
   // Sync events prop with Schedule-X
   useEffect(() => {
     if (!events) return;
-    if (eventsService) {
-      eventsService.set(events);
-    }
+    eventsService.set(events);
   }, [events, eventsService]);
 
   return (
@@ -114,7 +134,6 @@ export default function CalendarCanvas({
         calendarApp={calendarApp}
         customComponents={{
           timeGridEvent: CustomTimeGridEvent,
-          // Removed eventModal custom component as we use native click handler
         }}
       />
     </div>
