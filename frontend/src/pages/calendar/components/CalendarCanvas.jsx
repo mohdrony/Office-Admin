@@ -61,6 +61,36 @@ export default function CalendarCanvas({
           onContainer: "#e9fff1",
         },
       },
+      vacation: {
+        label: "Vacation",
+        colorName: "vacation",
+        isVisible: true,
+        lightColors: {
+          main: "#ff4e4e",
+          container: "#ffecec",
+          onContainer: "#340000",
+        },
+        darkColors: {
+          main: "#ff4e4e",
+          container: "#2a0f0f",
+          onContainer: "#ffecec",
+        },
+      },
+      holidays: {
+        label: "Holidays",
+        colorName: "holidays",
+        isVisible: true,
+        lightColors: {
+          main: "#aaaaaa",
+          container: "#f0f0f0",
+          onContainer: "#1f1f1f",
+        },
+        darkColors: {
+          main: "#aaaaaa",
+          container: "#2c2c2c",
+          onContainer: "#f0f0f0",
+        },
+      },
     },
 
     views,
