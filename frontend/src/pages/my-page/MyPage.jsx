@@ -1,12 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
-console.log("[MyPage] Module loading...");
-try {
-    console.log("[MyPage] Global Temporal:", window.Temporal);
-} catch (e) {
-    console.error("[MyPage] Error accessing window.Temporal:", e);
-}
-
 import "./MyPage.scss";
+
 import { myPageData } from "../../data/myPageDummy";
 import { projectsDummy } from "../../data/projectsDummy";
 import { teamDummy } from "../../data/teamDummy";
@@ -40,26 +34,12 @@ const VIEW_MODES = {
 };
 
 export default function MyPage() {
-    console.log("[MyPage] Component rendering...");
-    try {
-        console.log("[MyPage] Checking Temporal inside render:", Temporal);
-        console.log("[MyPage] Checking TZ_DEFAULT:", TZ_DEFAULT);
-    } catch (e) {
-        console.error("[MyPage] Error accessing Temporal/TZ_DEFAULT inside render:", e);
-    }
-
     const [viewMode, setViewMode] = useState(VIEW_MODES.WEEK);
-    const [cursorDate, setCursorDate] = useState(() => {
-        try {
-            return Temporal.Now.plainDateISO();
-        } catch (e) {
-            console.error("[MyPage] Error in cursorDate initializer:", e);
-            throw e;
-        }
-    });
+    const [cursorDate, setCursorDate] = useState(() => Temporal.Now.plainDateISO());
 
 
     // Data - User from TeamDummy (Simulating logged in user ID u1)
+
     const user = teamDummy.find(p => p.id === "u1") || teamDummy[0];
 
     // Time entries still from local dummy for now
