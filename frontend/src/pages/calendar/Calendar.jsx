@@ -80,21 +80,25 @@ export default function Calendar() {
     plugins: [eventsService, controls, dnd],
     calendars: {
       office: {
+        colorName: "office",
         label: "Office",
         lightColors: { main: "#4ea1ff", container: "#eaf2ff", onContainer: "#0b1a33" },
         darkColors: { main: "#4ea1ff", container: "#142033", onContainer: "#eaf2ff" },
       },
       projects: {
+        colorName: "projects",
         label: "Projects",
         lightColors: { main: "#5ee38b", container: "#e9fff1", onContainer: "#062112" },
         darkColors: { main: "#5ee38b", container: "#11261a", onContainer: "#e9fff1" },
       },
       vacation: {
+        colorName: "vacation",
         label: "Vacation",
         lightColors: { main: "#ff4e4e", container: "#ffecec", onContainer: "#3a0000" },
         darkColors: { main: "#ff4e4e", container: "#2a1111", onContainer: "#ffecec" },
       },
       holidays: {
+        colorName: "holidays",
         label: "Holidays",
         lightColors: { main: "#aaaaaa", container: "#f1f1f1", onContainer: "#222222" },
         darkColors: { main: "#aaaaaa", container: "#1e1e1e", onContainer: "#f1f1f1" },
@@ -136,6 +140,7 @@ export default function Calendar() {
 
   useEffect(() => {
     if (!calendarApp) return;
+    console.log("Calendar.jsx: scheduleXEvents", scheduleXEvents);
     eventsService?.set?.(scheduleXEvents ?? []);
   }, [calendarApp, eventsService, scheduleXEvents]);
 
@@ -168,24 +173,24 @@ export default function Calendar() {
         <div className="calCanvas">
           {isLoading ? <div className="calLoading">Loading…</div> : null}
           <CalendarToolbar
-  title="Calendar"
-  activeView="week"
-  onPrev={() => {}}
-  onNext={() => {}}
-  onToday={() => {}}
-  onSetView={() => {}}
-  calendars={[
-    { id: "office", label: "Office", color: "#4ea1ff" },
-    { id: "projects", label: "Projects", color: "#5ee38b" },
-    { id: "vacation", label: "Vacation", color: "#ff4e4e" },
-    { id: "holidays", label: "Holidays", color: "#aaaaaa" },
-  ]}
-  visibleCalendars={new Set(["office", "projects", "vacation", "holidays"])}
-  onToggleCalendar={() => {}}
-  onOpenCreate={() => {}}
-/>
+            title="Calendar"
+            activeView="week"
+            onPrev={() => { }}
+            onNext={() => { }}
+            onToday={() => { }}
+            onSetView={() => { }}
+            calendars={[
+              { id: "office", label: "Office", color: "#4ea1ff" },
+              { id: "projects", label: "Projects", color: "#5ee38b" },
+              { id: "vacation", label: "Vacation", color: "#ff4e4e" },
+              { id: "holidays", label: "Holidays", color: "#aaaaaa" },
+            ]}
+            visibleCalendars={new Set(["office", "projects", "vacation", "holidays"])}
+            onToggleCalendar={() => { }}
+            onOpenCreate={() => { }}
+          />
 
-        
+
           <ScheduleXCalendar calendarApp={calendarApp} />
 
           <EventDetailModal

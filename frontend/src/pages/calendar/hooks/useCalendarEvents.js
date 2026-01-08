@@ -70,13 +70,16 @@ function scheduleXToStore(ev) {
 
 
 export default function useCalendarEvents() {
-  const [events, setEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Synchronous load for testing
+  const [events, setEvents] = useState(() => listEvents().map(storeToScheduleX));
+  const [isLoading, setIsLoading] = useState(false);
 
+  /*
   useEffect(() => {
     setEvents(listEvents().map(storeToScheduleX));
     setIsLoading(false);
   }, []);
+  */
 
   const scheduleXEvents = useMemo(() => events, [events]);
 

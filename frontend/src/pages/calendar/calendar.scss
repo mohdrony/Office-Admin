@@ -167,9 +167,9 @@
   padding: 6px 8px;
 
   /* Let Schedule-X paint event colors by calendar */
-  background: unset;
-  border: unset;
-  color: unset;
+  /* background: unset; */
+  /* border: unset; */
+  /* color: unset; */
 
   /* Optional subtle outline that won’t kill background color */
   outline: 1px solid color-mix(in oklab, var(--border) 70%, transparent);

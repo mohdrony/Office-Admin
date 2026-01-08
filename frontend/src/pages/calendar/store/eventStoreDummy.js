@@ -18,6 +18,7 @@ function toOffsetIso(dateStr, timeStr) {
 }
 
 let EVENTS = [
+  // Office Events
   {
     id: "e1",
     title: "Jour fixe — Ville-Quartier",
@@ -33,6 +34,60 @@ let EVENTS = [
     allDay: false,
     startAt: toOffsetIso(getRelativeDate(1), "12:00"),
     endAt: toOffsetIso(getRelativeDate(1), "13:30"),
+  },
+  {
+    id: "e3",
+    title: "Client Call: Smith Corp",
+    calendarId: "office",
+    allDay: false,
+    startAt: toOffsetIso(getRelativeDate(2), "14:00"),
+    endAt: toOffsetIso(getRelativeDate(2), "15:00"),
+  },
+
+  // Project Events
+  {
+    id: "p1",
+    title: "Site Visit: Tower A",
+    calendarId: "projects",
+    allDay: false,
+    startAt: toOffsetIso(getRelativeDate(3), "09:00"),
+    endAt: toOffsetIso(getRelativeDate(3), "12:00"),
+  },
+  {
+    id: "p2",
+    title: "Design Review: Phase 2",
+    calendarId: "projects",
+    allDay: false,
+    startAt: toOffsetIso(getRelativeDate(4), "15:00"),
+    endAt: toOffsetIso(getRelativeDate(4), "17:00"),
+  },
+  {
+    id: "p3",
+    title: "Material Delivery",
+    calendarId: "projects",
+    allDay: true,
+    startDate: getRelativeDate(5),
+    endDate: getRelativeDate(6),
+  },
+
+  // Vacation
+  {
+    id: "v1",
+    title: "Alice Vacation",
+    calendarId: "vacation",
+    allDay: true,
+    startDate: getRelativeDate(7),
+    endDate: getRelativeDate(9),
+  },
+
+  // Holidays
+  {
+    id: "h1",
+    title: "Public Holiday",
+    calendarId: "holidays",
+    allDay: true,
+    startDate: getRelativeDate(10),
+    endDate: getRelativeDate(11),
   },
 ];
 
