@@ -2,6 +2,7 @@
 import "./calendar.scss";
 import "temporal-polyfill/global";
 import "@schedule-x/theme-default/dist/index.css";
+import CalendarToolbar from "./components/CalendarToolbar";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -166,7 +167,25 @@ export default function Calendar() {
       <div className="calendarSurface">
         <div className="calCanvas">
           {isLoading ? <div className="calLoading">Loading…</div> : null}
+          <CalendarToolbar
+  title="Calendar"
+  activeView="week"
+  onPrev={() => {}}
+  onNext={() => {}}
+  onToday={() => {}}
+  onSetView={() => {}}
+  calendars={[
+    { id: "office", label: "Office", color: "#4ea1ff" },
+    { id: "projects", label: "Projects", color: "#5ee38b" },
+    { id: "vacation", label: "Vacation", color: "#ff4e4e" },
+    { id: "holidays", label: "Holidays", color: "#aaaaaa" },
+  ]}
+  visibleCalendars={new Set(["office", "projects", "vacation", "holidays"])}
+  onToggleCalendar={() => {}}
+  onOpenCreate={() => {}}
+/>
 
+        
           <ScheduleXCalendar calendarApp={calendarApp} />
 
           <EventDetailModal

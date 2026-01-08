@@ -1,10 +1,207 @@
-.calendarPage { width: 100%; min-width: 0; }
+/* src/pages/calendar/calendar.scss */
+
+.calendarPage {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Surface wrapper */
 .calendarSurface {
   width: 100%;
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
-  background: var(--panel);
+
+  /* Heights (used to avoid overlap and calc wrapper height) */
+  --cal-toolbar-h: 56px; /* your custom toolbar */
+  --sx-topbar-h: 48px; /* Schedule-X topbar (approx; adjust if needed) */
+
+  /* =========================================================
+     Schedule-X Theme Variables (IMPORTANT)
+     ========================================================= */
+  --sx-color-primary: var(--accent);
+  --sx-color-on-primary: var(--accent-ink);
+
+  --sx-color-background: var(--panel);
+  --sx-color-surface: var(--panel);
+  --sx-color-border: var(--border);
+
+  /* 🔑 Fix dark mode text */
+  --sx-color-on-surface: var(--text);
+  --sx-color-on-background: var(--text);
+
+  /* Muted labels */
+  --sx-color-muted: color-mix(in oklab, var(--text) 55%, transparent);
+
+  color: var(--text);
 }
-.calCanvas { padding: 8px; }
-.calCanvas .sx-react-calendar-wrapper { width: 100%; min-height: 640px; }
+
+.calLoading {
+  padding: 10px 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Your own toolbar sits above the calendar */
+.calendarSurface .calToolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20; /* above Schedule-X topbar */
+}
+
+/* Canvas wrapper for Schedule-X */
+.calCanvas {
+  padding: 8px;
+}
+
+/* Schedule-X requires wrapper to have height/width */
+.calCanvas .sx-react-calendar-wrapper {
+  width: 100%;
+  height: calc(100vh - 56px - 32px - var(--cal-toolbar-h) - var(--sx-topbar-h));
+  min-height: 640px;
+
+  background: var(--panel);
+  border-radius: 0;
+}
+
+/* =========================================================
+   ✅ Keep Schedule-X default UI visible
+   ========================================================= */
+
+/* If Schedule-X topbar is sticky, push it below your toolbar */
+.calendarSurface .sx__topbar {
+  top: var(--cal-toolbar-h) !important;
+  z-index: 10;
+}
+
+/* Safety: ensure text inside SX isn’t forced dark */
+.calendarSurface .sx__topbar,
+.calendarSurface .sx__topbar button,
+.calendarSurface .sx__calendar-header,
+.calendarSurface .sx__time-label,
+.calendarSurface .sx__day-header {
+  color: var(--text);
+}
+
+/* Icons inherit currentColor */
+.calendarSurface .sx__topbar svg {
+  fill: currentColor;
+}
+
+/* =========================================================
+   Schedule-X visual integration
+   ========================================================= */
+
+/* Grid lines */
+.calendarSurface .sx__time-grid,
+.calendarSurface .sx__month-grid {
+  border-color: var(--border);
+}
+
+/* Hour labels */
+.calendarSurface .sx__time-label {
+  font-size: 11px;
+}
+
+/* Day headers */
+.calendarSurface .sx__day-header {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Today highlight */
+.calendarSurface .sx__today {
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
+}
+
+/* Remove strong focus outlines */
+.calendarSurface .sx__cell:focus,
+.calendarSurface .sx__event:focus {
+  outline: none;
+}
+
+/* Background cells */
+.calendarSurface .sx__cell {
+  background: transparent;
+}
+
+/* Alternate time rows slightly (very subtle) */
+.calendarSurface .sx__time-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* Weekend styling (preserved) */
+.sx__saturday,
+.sx__sunday {
+  background-color: var(--tl-weekend, rgba(0, 0, 0, 0.03));
+}
+
+/* Business-hours highlighting (9:00–17:00) */
+.sx__time-grid-day:not(.sx__saturday):not(.sx__sunday) {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.015) 0%,
+    rgba(0, 0, 0, 0.015) 37.5%,
+    rgba(255, 255, 255, 0) 37.5%,
+    rgba(255, 255, 255, 0) 70.833%,
+    rgba(0, 0, 0, 0.015) 70.833%,
+    rgba(0, 0, 0, 0.015) 100%
+  );
+}
+
+/* =========================================================
+   Event styling (Timeline-like) BUT keep calendar colors!
+   ========================================================= */
+
+/* ✅ IMPORTANT:
+   Do NOT set background/border/color here, otherwise all events
+   lose their per-calendar colors and become your accent color.
+*/
+.calendarSurface .sx__event {
+  border-radius: 10px;
+  box-shadow: none;
+
+  font-size: 12px;
+  font-weight: 650;
+  padding: 6px 8px;
+
+  /* Let Schedule-X paint event colors by calendar */
+  background: unset;
+  border: unset;
+  color: unset;
+
+  /* Optional subtle outline that won’t kill background color */
+  outline: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  outline-offset: -1px;
+}
+
+.calendarSurface .sx__event-title {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.calendarSurface .sx__event-time {
+  font-size: 11px;
+  /* don’t force muted here; let SX decide based on contrast */
+}
+
+/* Hover: don’t repaint background (keeps calendar color) */
+.calendarSurface .sx__event:hover {
+  filter: brightness(1.03);
+}
+
+/* =========================================================
+   Holiday styling
+   ========================================================= */
+
+/* If you want holidays to be truly “special”, keep this.
+   Note: this WILL override calendar colors for events that have class is-holiday.
+*/
+.sx__event.is-holiday {
+  background-color: #aaaaaa !important;
+  border-color: #888 !important;
+  color: #fff !important;
+  font-style: italic;
+  pointer-events: none;
+}
