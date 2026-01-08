@@ -11,6 +11,8 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import PermIdentityRoundedIcon from "@mui/icons-material/PermIdentityRounded";
 import PhotoLibraryRoundedIcon from '@mui/icons-material/PhotoLibraryRounded';
+import FolderSpecialRoundedIcon from '@mui/icons-material/FolderSpecialRounded';
+import PermContactCalendarRoundedIcon from '@mui/icons-material/PermContactCalendarRounded';
 
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -133,6 +135,20 @@ export default function Sidebar({
               <PeopleAltRoundedIcon className="icon" />
             </span>
             <span className="label">Team</span>
+          </NavLink>
+
+          <NavLink to="/secretariat" className={navClass} onClick={handleNavClick}>
+            <span className="iconWrap">
+              <FolderSpecialRoundedIcon className="icon" />
+            </span>
+            <span className="label">Sekretariat</span>
+          </NavLink>
+
+          <NavLink to="/addressbook" className={navClass} onClick={handleNavClick}>
+            <span className="iconWrap">
+              <PermContactCalendarRoundedIcon className="icon" />
+            </span>
+            <span className="label">Addressbook</span>
           </NavLink>
 
           <NavLink to="/settings" className={navClass} onClick={handleNavClick}>

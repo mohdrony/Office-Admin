@@ -12,6 +12,8 @@ import Login from "./pages/login/Login.jsx";
 import MyPage from "./pages/my-page/MyPage.jsx";
 import Settings from "./pages/settings/Settings.jsx";
 import PhotoLibrary from "./pages/photos/PhotoLibrary.jsx";
+import Secretariat from "./pages/secretariat/Secretariat.jsx";
+import Addressbook from "./pages/addressbook/Addressbook.jsx";
 import { PersonProvider } from "./context/PersonContext.jsx";
 import PersonDetailModal from "./components/PersonDetailModal/PersonDetailModal.jsx";
 import { ProjectProvider } from "./context/ProjectContext.jsx";
@@ -43,6 +45,8 @@ export default function App() {
                 <Route path="my-page" element={<MyPage />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="photos" element={<PhotoLibrary />} />
+                <Route path="secretariat" element={<Secretariat />} />
+                <Route path="addressbook" element={<Addressbook />} />
               </Route>
             </Routes>
           </BrowserRouter>
