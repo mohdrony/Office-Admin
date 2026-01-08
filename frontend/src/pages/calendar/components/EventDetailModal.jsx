@@ -1,143 +1,150 @@
+// src/pages/calendar/components/EventDetailModal.jsx
 import "./eventDetailModal.scss";
+import "temporal-polyfill/global";
+import { TZ_DEFAULT } from "../types";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
-function formatDate(date) {
-    if (!date) return "";
-    // Accept ISO string, Date, or Temporal objects
-    let jsDate;
-    try {
-        if (typeof date === "string") {
-            // Fix for Mac/Safari: replace space with T if needed
-            const safeDate = date.replace(" ", "T");
-            jsDate = new Date(safeDate);
-        } else if (date instanceof Date) {
-            jsDate = new Date(date);
-        } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDate || date instanceof Temporal.PlainDateTime)) {
-            if (date.toInstant) {
-                jsDate = new Date(date.toInstant().epochMilliseconds);
-            } else {
-                // PlainDate or PlainDateTime: use component construction for local time (avoids UTC shifts)
-                jsDate = new Date(date.year, date.month - 1, date.day);
-            }
-        } else {
-            jsDate = new Date(date);
-        }
-    } catch (e) {
-        return "";
+function toZdt(x) {
+  if (!x) return null;
+
+  try {
+    // Temporal objects
+    if (typeof Temporal !== "undefined") {
+      if (x instanceof Temporal.ZonedDateTime) return x;
+
+      // Note: with your polyfill build, PlainDateTime expects a string timeZone arg
+      if (x instanceof Temporal.PlainDateTime) return x.toZonedDateTime(TZ_DEFAULT);
+
+      if (x instanceof Temporal.PlainDate) {
+        // PlainDate.toZonedDateTime expects object with timeZone + plainTime
+        return x.toZonedDateTime({ timeZone: TZ_DEFAULT, plainTime: "00:00" });
+      }
     }
 
-    if (isNaN(jsDate.getTime())) return String(date);
+    // Strings from Schedule-X / store
+    if (typeof x === "string") {
+      const s = x.includes(" ") ? x.replace(" ", "T") : x;
 
-    return new Intl.DateTimeFormat("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    }).format(jsDate);
+      // If it has an offset or Z, treat as an instant, then view in Europe/Berlin
+      if (s.endsWith("Z") || /[+-]\d\d:\d\d$/.test(s)) {
+        const inst = Temporal.Instant.from(s);
+        return inst.toZonedDateTimeISO(TZ_DEFAULT);
+      }
+
+      // Otherwise treat as local datetime in TZ_DEFAULT
+      return Temporal.PlainDateTime.from(s).toZonedDateTime(TZ_DEFAULT);
+    }
+
+    // JS Date fallback
+    if (x instanceof Date) {
+      const inst = Temporal.Instant.fromEpochMilliseconds(x.getTime());
+      return inst.toZonedDateTimeISO(TZ_DEFAULT);
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
 }
 
-function formatTime(date) {
-    if (!date) return "";
-    let jsDate;
-    try {
-        if (typeof date === "string") {
-            const safeDate = date.replace(" ", "T");
-            jsDate = new Date(safeDate);
-        } else if (date instanceof Date) {
-            jsDate = new Date(date);
-        } else if (typeof Temporal !== "undefined" && (date instanceof Temporal.ZonedDateTime || date instanceof Temporal.PlainDateTime)) {
-            if (date.toInstant) {
-                jsDate = new Date(date.toInstant().epochMilliseconds);
-            } else {
-                // PlainDateTime: construct local date/time
-                jsDate = new Date(date.year, date.month - 1, date.day, date.hour, date.minute);
-            }
-        } else {
-            jsDate = new Date(date);
-        }
-    } catch (e) {
-        return "";
+function isAllDayEvent(ev) {
+  if (!ev) return false;
+
+  if (typeof Temporal !== "undefined") {
+    if (ev.start instanceof Temporal.PlainDate || ev.end instanceof Temporal.PlainDate) {
+      return true;
     }
+  }
 
-    if (isNaN(jsDate.getTime())) return "";
+  // String fallback: midnight-to-midnight
+  if (typeof ev.start === "string" && typeof ev.end === "string") {
+    const s = ev.start.includes(" ") ? ev.start.replace(" ", "T") : ev.start;
+    const e = ev.end.includes(" ") ? ev.end.replace(" ", "T") : ev.end;
+    return s.endsWith("00:00") && e.endsWith("00:00");
+  }
 
-    return new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-    }).format(jsDate);
+  return false;
+}
+
+function formatDate(x) {
+  const zdt = toZdt(x);
+  if (!zdt) return x ? String(x) : "";
+
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ_DEFAULT,
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(zdt.toInstant().epochMilliseconds));
+}
+
+function formatTime(x) {
+  const zdt = toZdt(x);
+  if (!zdt) return "";
+
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ_DEFAULT,
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(zdt.toInstant().epochMilliseconds));
 }
 
 export default function EventDetailModal({
-    event,
-    isOpen,
-    onClose,
-    onEdit,
-    onDelete,
-    calendars = [],
+  event,
+  isOpen,
+  onClose,
+  onEdit,
+  onDelete,
+  calendars = [],
 }) {
-    if (!isOpen || !event) return null;
+  if (!isOpen || !event) return null;
 
-    const calendar = calendars.find((c) => c.id === event.calendarId) || {};
-    // Determine all‑day: Temporal.PlainDate (no time) or ISO strings at midnight
-    const isAllDay = (
-        (typeof Temporal !== "undefined" && (event.start instanceof Temporal.PlainDate || event.end instanceof Temporal.PlainDate)) ||
-        (typeof event.start === "string" && event.start.endsWith("00:00") && typeof event.end === "string" && event.end.endsWith("00:00"))
-    );
+  const calendar = calendars.find((c) => c.id === event.calendarId) || {};
+  const allDay = isAllDayEvent(event);
 
-    return (
-        <div className="edScrim" onClick={onClose}>
-            <div className="edModal" onClick={(e) => e.stopPropagation()}>
-                <div className="edHeader">
-                    <div className="edActions">
-                        <button className="edIconBtn" onClick={onEdit} title="Edit Event">
-                            <EditRoundedIcon fontSize="small" />
-                        </button>
-                        <button
-                            className="edIconBtn"
-                            onClick={() => {
-                                if (window.confirm("Are you sure you want to delete this event?")) {
-                                    onDelete?.();
-                                }
-                            }}
-                            title="Delete Event"
-                        >
-                            <DeleteRoundedIcon fontSize="small" />
-                        </button>
-                        <button className="edIconBtn" onClick={onClose} title="Close">
-                            <CloseRoundedIcon fontSize="small" />
-                        </button>
-                    </div>
-                </div>
+  return (
+    <div className="edScrim" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="edModal" onClick={(e) => e.stopPropagation()}>
+        <div className="edHeader">
+          <div className="edActions">
+            <button className="edIconBtn" onClick={onEdit} title="Edit Event" type="button">
+              <EditRoundedIcon fontSize="small" />
+            </button>
 
-                <div className="edBody">
-                    <div className="edTitleLine">
-                        <div
-                            className="edCalDot"
-                            style={{ background: calendar.color || "var(--accent)" }}
-                        />
-                        <h2 className="edTitle">{event.title}</h2>
-                    </div>
+            <button className="edIconBtn" type="button" onClick={onDelete} title="Delete Event">
+              <DeleteRoundedIcon fontSize="small" />
+            </button>
 
-                    <div className="edMeta">
-                        <div className="edMetaRow">
-                            <CalendarTodayRoundedIcon fontSize="inherit" className="edIcon" />
-                            <span>{formatDate(event.start)}</span>
-                        </div>
-                        <div className="edMetaRow">
-                            <AccessTimeRoundedIcon fontSize="inherit" className="edIcon" />
-                            <span>
-                                {isAllDay
-                                    ? "All Day"
-                                    : `${formatTime(event.start)} – ${formatTime(event.end)}`}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button className="edIconBtn" onClick={onClose} title="Close" type="button">
+              <CloseRoundedIcon fontSize="small" />
+            </button>
+          </div>
         </div>
-    );
+
+        <div className="edBody">
+          <div className="edTitleLine">
+            <div className="edCalDot" style={{ background: calendar.color || "var(--accent)" }} />
+            <h2 className="edTitle">{event.title}</h2>
+          </div>
+
+          <div className="edMeta">
+            <div className="edMetaRow">
+              <CalendarTodayRoundedIcon fontSize="inherit" className="edIcon" />
+              <span>{formatDate(event.start)}</span>
+            </div>
+
+            <div className="edMetaRow">
+              <AccessTimeRoundedIcon fontSize="inherit" className="edIcon" />
+              <span>{allDay ? "All Day" : `${formatTime(event.start)} – ${formatTime(event.end)}`}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
